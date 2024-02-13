@@ -1,0 +1,44 @@
+name: Community
+
+entries:
+  - title: AMP Name Here
+    label: Github-repo-name-here
+    short_description: |
+        Short description of what the AMP does.
+    long_description: |
+        Long description of what the AMP does.
+    long_description_html: |
+        Long description of what the AMP does.
+    image_path: >-
+      https://raw.githubusercontent.com/githubusername/githubrepo/main/path/to/amp/cover.png
+    tags:
+      - Sample
+      - Tags
+      - Used
+      - As
+      - Identifiers
+    git_url: 'https://github.com/githubusername/githubrepo'
+    is_prototype: true
+    is_community: true
+    is_new: true
+
+  - title: A different AMP Name Here
+    label: Github-repo-name-here
+    short_description: |
+        Short description of what the AMP does.
+    long_description: |
+        Long description of what the AMP does.
+    long_description_html: |
+        Long description of what the AMP does.
+    image_path: >-
+      https://raw.githubusercontent.com/githubusername/githubrepo/main/path/to/amp/cover.png
+    tags:
+      - Sample
+      - Tags
+      - Used
+      - As
+      - Identifiers
+    git_url: 'https://github.com/githubusername/githubrepo'
+    is_prototype: true
+    is_community: true
+    is_new: true

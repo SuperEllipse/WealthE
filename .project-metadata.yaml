@@ -1,0 +1,63 @@
+name: AMP Name Here
+description: Short description of what the AMP does.
+author: Your name or company name here
+specification_version: 1.0
+prototype_version: 1.0
+date: "YYYY-MM-DD"
+
+environment_variables:
+  RANDOM_VARIABLE_NAME:
+    default: "DEFAULT-VALUE"
+    description: "A description providing user clarifying information about the variable."
+    required: false
+
+runtimes:
+  - editor: Workbench ## Other acceptable values are determined by the runtimes available in your CML environment
+    kernel: Python 3.9 ## Same here, check your runtimes (custom runtimes can be added as well)
+    edition: Standard ## Particularly relevant if using GPUs, Nvidia GPU
+
+## Below are some sample tasks based on some of the most popular aspects of AMP creation.
+tasks:
+  - type: create_job
+    name: Install dependencies
+    entity_label: install_deps
+    script: cml/install_deps.py
+    arguments: None
+    cpu: 1
+    memory: 4
+    short_summary: Create job to install project dependencies.
+    environment:
+      TASK_TYPE: CREATE/RUN_JOB
+
+  - type: run_job
+    entity_label: install_deps
+    short_summary: Running install dependencies job.
+    long_summary: >-
+      Running the job to install dependencies.  Note that this requires at least 2GB of memory
+
+  - type: create_job
+    name: Train Model
+    entity_label: train_model
+    script: train.py
+    arguments: None
+    short_summary: Job to train and export model.
+    long_summary: Job to train and export model. Note that this requires at least 2GB of memory.
+    cpu: 1
+    memory: 3
+    environment:
+      TASK_TYPE: CREATE/RUN_JOB
+
+  - type: run_job
+    entity_label: train_model
+    short_summary: Running model training job.
+    long_summary: >-
+      Running the job to train a model.
+
+  - type: start_application
+    name: Application to serve Deep Learning for Anomaly Detectionn UI
+    short_summary: Create an application to serve the Anomaly Detection UI.
+    long_summary: Create an application to serve the Anomaly Detection UI.
+    subdomain: deepad
+    script: app/backend/app.py
+    environment_variables:
+      TASK_TYPE: START_APPLICATION
