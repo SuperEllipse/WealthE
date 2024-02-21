@@ -11,7 +11,7 @@ One great use for AMPs is to showcase reference examples specific to your busine
 
 Each individual AMP requires a project metadata file, which defines the environmental resources needed by the AMP, and the setup steps to install the AMP in a Cloudera Machine Learning workspace. See Required Components below for details.
 
-***Note****: You can store your AMPs in a git repo hosted on Github, Github Enterprise, or GitLab servers (not limited to github.com or gitlab.com.) Additionally, only simple authentication is supported, such as passing an API key, or including the username and password, as part of the URL. If additional authentication steps are required, then that git host is not supported.*
+***Note*** *: You can store your AMPs in a git repo hosted on Github, Github Enterprise, or GitLab servers (not limited to github.com or gitlab.com.) Additionally, only simple authentication is supported, such as passing an API key, or including the username and password, as part of the URL. If additional authentication steps are required, then that git host is not supported.*
 
 ## Required Components
 
@@ -28,9 +28,9 @@ Refer to https://docs.cloudera.com/machine-learning/cloud/applied-ml-prototypes/
 Additionally, https://docs.cloudera.com/machine-learning/cloud/applied-ml-prototypes/topics/ml-amp-custom-amp-catalog.html describes hosting custom AMP catalogs.
 
 ### Model Build Shell Script
-`cdsw_build.sh` - (Optional in most cases) This file is required by Docker for building images. This is necessary if you are using AMPs to deploy a model in CML (CML-Native model).
+`cdsw-build.sh` - (Optional in most cases) This file is required by Docker for building images. This is necessary if you are using AMPs to deploy a model in CML (CML-Native model).
 
-Note that other than the `/samples` directory, the rest of the repo should stay "as is" and both the location of the files in the root directory (`/`) as well as the naming coventions are relevant.
+Note that other than the `/samples`  and numbered directories, the rest of the repo should stay "as is" and both the location of the files in the root directory (`/`) as well as the naming coventions are relevant.
 
 ## Required Folder Structure
 
@@ -45,6 +45,19 @@ There are several CML components to observe: **"Jobs", "Sessions", "Applications
 ```
 
 By following this general structure, `/<step number>_<CML Component>-<your task description>`, you can ensure consistency in how the repo is interpreted after it has been deployed and the users can easily understand the steps taken and if failure occured, which step it occured at.
+
+## Required Information
+
+It is expected that each AMP will contain the Runtime information: Editor, Kernel, Edition, Add-ons (if necessary). 
+
+**Example:**
+
+```yaml
+runtimes:
+  - editor: Workbench ## Other acceptable values are determined by the runtimes available in your CML environment
+    kernel: Python 3.11 ## Same here, check your runtimes (custom runtimes can be added as well)
+    edition: Standard ## Particularly relevant if using GPUs, Nvidia GPU
+```
 
 ## Adding custom catalog entries to your organization's instance of CML
 
