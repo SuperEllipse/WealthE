@@ -13,15 +13,26 @@ environment_variables:
 
 runtimes:
   - editor: Workbench ## Other acceptable values are determined by the runtimes available in your CML environment
-    kernel: Python 3.9 ## Same here, check your runtimes (custom runtimes can be added as well)
+    kernel: Python 3.10 ## Same here, check your runtimes (custom runtimes can be added as well)
     edition: Standard ## Particularly relevant if using GPUs, Nvidia GPU
 
 ## Below are some sample tasks based on some of the most popular aspects of AMP creation.
 tasks:
+
+  ## SESSION related AMP snippet
+  - type: run_session
+    name: Install Dependencies
+    script: 0_session-install-dependencies/install_dependencies.py
+    short_summary: Install Requirements and Dependencies
+    kernel: python3
+    cpu: 2
+    memory: 4
+
+  ## JOB related AMP snippet
   - type: create_job
-    name: Install dependencies
-    entity_label: install_deps
-    script: cml/install_deps.py
+    name: Sample Job
+    entity_label: sample_job
+    script: 1_job-run-python-job/job.py
     arguments: None
     cpu: 1
     memory: 4
@@ -30,34 +41,46 @@ tasks:
       TASK_TYPE: CREATE/RUN_JOB
 
   - type: run_job
-    entity_label: install_deps
-    short_summary: Running install dependencies job.
-    long_summary: >-
-      Running the job to install dependencies.  Note that this requires at least 2GB of memory
+    entity_label: sample_job
+    short_summary: Short summary here about running the job you just created.
 
-  - type: create_job
-    name: Train Model
-    entity_label: train_model
-    script: train.py
-    arguments: None
-    short_summary: Job to train and export model.
-    long_summary: Job to train and export model. Note that this requires at least 2GB of memory.
-    cpu: 1
-    memory: 3
-    environment:
-      TASK_TYPE: CREATE/RUN_JOB
+  ## MODEL related AMP snippet
+  - type: create_model
+    name: model-name
+    entity_label: sample-model-entity-label
+    description: create sample model hosted in CML. 
+    short_summary: Model name
+    default_resources:
+      cpu: 2
+      memory: 4
+      gpu: 1
+    default_replication_policy:
+      type: fixed
+      num_replicas: 1
+  
+  - type: build_model
+    name: Build Sample model
+    entity_label: sample-model-entity-label
+    comment: First build by the AMP
+    examples:
+      - request:
+          prompt: What is Cloudera?
+          temperature: 0
+          max_new_tokens: 50
+          repetition_penalty: 0.5
 
-  - type: run_job
-    entity_label: train_model
-    short_summary: Running model training job.
-    long_summary: >-
-      Running the job to train a model.
+    target_file_path: 2_model-deploy-model/launch-model.py
+    target_function_name: api_wrapper
 
+  - type: deploy_model
+    entity_label: sample-model-entity-label
+
+  ## APPLICATION related AMP snippet
   - type: start_application
-    name: Application to serve Deep Learning for Anomaly Detectionn UI
-    short_summary: Create an application to serve the Anomaly Detection UI.
-    long_summary: Create an application to serve the Anomaly Detection UI.
-    subdomain: deepad
-    script: app/backend/app.py
+    name: Application Name here
+    short_summary: Write a short summary of the app here.
+    long_summary: Write a longer summary about the app here.
+    subdomain: pick-a-domain-here
+    script: 3_app-run-python-script/app.py
     environment_variables:
       TASK_TYPE: START_APPLICATION
