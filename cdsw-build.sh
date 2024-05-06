@@ -1,1 +1,1 @@
-pip install --no-cache-dir -r 2_model-deploy-model/model-requirements.txt
+pip install --no-cache-dir -r 0_session-install-dependencies/requirements.txt
