@@ -1,1 +1,19 @@
 ## list pip requirements here
+ollama==0.1.8
+llama-index==0.10.24
+pysqlite3-binary
+chainlit
+chromadb==0.5.0
+torch
+sentence-transformers
+llama-index-llms-ollama
+llama-index-embeddings-ollama
+#llama-index-embeddings-huggingface
+llama-index-embeddings-fastembed
+llama-index-vector-stores-chroma
+fastembed
+trafilatura
+litellm
+trulens-eval==0.27.0
+ipython>=8.12.0 
+ipywidgets>=8.0.6
