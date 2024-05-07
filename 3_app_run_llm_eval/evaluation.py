@@ -10,8 +10,7 @@ from IPython.display import Markdown, display
 import chromadb
 import ollama
 import pandas as pd
-
-
+import mlflow
 #Evaluation Specific imports
 from trulens_eval import TruLlama
 from trulens_eval import Tru, Feedback, Select
@@ -23,10 +22,14 @@ tru = Tru()
 tru.reset_database()
 
 
-# Adding project utilities 
-sys.path.append('/home/cdsw/utils')
-import imp
-import utils.logging_config
+# Adding project utilities DEBUG ONLY CAN BE REMOVED LATER
+os.chdir(os.getenv("HOME"))
+
+import importlib
+import utils.configs
+importlib.reload(utils.configs)
+
+sys.path.append("/home/cdsw/utils")
 from utils.logging_config import get_logger
 from  utils.rag_helper import *
 logger = get_logger(__name__)
@@ -57,12 +60,14 @@ def setup_vector_index():
     chroma_collection = db2.get_or_create_collection(VECTORDB_COLLECTION)
     vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
-    logger.info("Loading the Index")
+    logger.info("INFO: Loading the Index")
     return VectorStoreIndex.from_vector_store(vector_store, storage_context=storage_context)
 
 def execute_query(query_engine, query):
     """
     Executes a query using the specified query engine and prints the response.
+    Potential response modes to play with are refine, compact, tree_summarize, simple_summarize, accumulate
+    More details are here : https://docs.llamaindex.ai/en/stable/module_guides/deploying/query_engine/response_modes/
     """
     response = query_engine.query(query)
     print(response)
@@ -71,6 +76,7 @@ def load_documents(directory):
     """
     Load documents from the specified directory.
     """
+    logger.info("INFO: Loading the documents")
     return SimpleDirectoryReader(directory).load_data()
   
   
@@ -99,7 +105,7 @@ def setup_feedback_system(query_engine):
     groundedness_provider.completion_args = {"api_base": os.environ["OLLAMA_BASE_URL"]}
     
     grounded = Groundedness(groundedness_provider=groundedness_provider)
-    
+    logger.info("INFO: Setting up feedback loops")
     # Define feedback functions
     f_groundedness = (
         Feedback(grounded.groundedness_measure_with_cot_reasons)
@@ -133,33 +139,6 @@ def read_questions_from_file(filename):
             questions.append(line.strip())
     return questions
   
-### or as context manager
-#with tru_query_engine_recorder as recording:
-#    query_engine.query("What did the author do growing up?")
-#  
-## The record of the app invocation can be retrieved from the `recording`:
-#
-#rec = recording.get() # use .get if only one record
-## recs = recording.records # use .records if multiple
-#
-#display(rec)
-
-# The results of the feedback functions can be rertireved from
-# `Record.feedback_results` or using the `wait_for_feedback_result` method. The
-# results if retrieved directly are `Future` instances (see
-# `concurrent.futures`). You can use `as_completed` to wait until they have
-# finished evaluating or use the utility method:
-#
-#for feedback, feedback_result in rec.wait_for_feedback_results().items():
-#    print(feedback.name, feedback_result.result)
-
-# See more about wait_for_feedback_results:
-# help(rec.wait_for_feedback_results)
-#records, feedback = tru.get_records_and_feedback(app_ids=["LlamaIndex_App1"])
-#
-#records.head()
-#
-#tru.get_leaderboard(app_ids=["LlamaIndex_App1"])
 
 # go through a list of questions for a baseline
 
@@ -212,9 +191,13 @@ def run_rag_evaluations():
     Baseline: Run against a Simple llama Index VectorIndex uses Simple sentence parser
     SentenceWindow: use window size to enhance the prompt context sent to LLM
     Auto Merge: Merge Different node sizes for enhanced prompting
+    
+    # Evaluation Details
+    1. Trulens to evaluate the prompts on TRIAD : Groundedness, Relevance, CoT
+    2. Mlflow experiment to log our experiment results
 
     """
-  
+    logger.info("INFO: running RAG Evaluations")    
     #load the documents to be used by the RAG
     documents =load_documents(directory=RAW_DATA_DIR)
     
@@ -224,7 +207,6 @@ def run_rag_evaluations():
     questions_file = os.path.join(EVAL_DATA_DIR, 'evaluation_questions.txt')
     eval_questions = read_questions_from_file(questions_file)
     display(eval_questions)
-
     #Run Baseline
     baseline_query_engine = setup_vector_index().as_query_engine()  
 
@@ -247,11 +229,7 @@ def run_rag_evaluations():
     tru_recorder_baseline = get_prebuilt_trulens_recorder(
                               sentence_window_engine_1,
                               app_id ='sentence window engine 1', feedbacks=feedbacks)
-#    tru_recorder_1 = get_prebuilt_trulens_recorder( 
-#                      sentence_window_engine_1,
-#                      app_id='sentence window engine 1',
-#                      feedbacks=feedbacks,
-#    )
+
     run_evals(eval_questions, tru_recorder_baseline, sentence_window_engine_1)
     tru.get_leaderboard(app_ids=[])
     
@@ -306,32 +284,58 @@ def run_rag_evaluations():
 
     run_evals(eval_questions, tru_recorder_AM_2, auto_merging_engine_1)
 
-    tru.get_leaderboard(app_ids=[])    
-  
+    tru.get_leaderboard(app_ids=[])  
+    
+    exp_name = "LLM Evaluations for RAG"
+    save_evaluations_in_mlflow(exp_name)
+
+    
+def save_evaluations_in_mlflow (exp_name):
+    """
+    This functions persists the TRIAD metrics into the mlflow experiments
+    """
+    # Add a try catch block
+    logger.info("INFO: Persisting in mlflow")    
+    # Evaluations are stored as a data frame by Tru Lens
+    mlflow.set_experiment(exp_name)
+    df = tru.get_leaderboard(app_ids=[])
+    for index,row in df.iterrows():
+      mlflow.start_run()
+      mlflow.set_tag("model_name", Settings.llm.model)
+      mlflow.log_param("eval_data", eval_questions)
+      mlflow.log_param("app_id", index)
+      mlflow.log_metric("context_relevance_with_cot_reasons", round(row["context_relevance_with_cot_reasons"],2))
+      mlflow.log_metric("relevance", round(row["relevance"],2))
+      mlflow.log_metric("groundedness_measure_with_cot_reasons", round(row["groundedness_measure_with_cot_reasons"],2))
+      mlflow.log_metric("latency", row["latency"])
+      mlflow.end_run()   
+
   
 def  main():
 
     
-  #validate the right runtime is selected
-  validate_runtime()
-  # Check if the 'ollama' process is already running
+    #validate the right runtime is selected
+    validate_runtime()
+    # Check if the 'ollama' process is already running
 
-  if is_process_running('ollama'):
-    logger.info(f"'ollama' is already running in background.")
-  else:
-    start_ollama_service()
-  # Test a model, llama2 is also the default, so works without parameters
-  test_ollama_model(model="llama2")  
+    if is_process_running('ollama'):
+        logger.info(f"'INFO: ollama' is already running in background.")
+    else:
+        start_ollama_service()
+    
+    # Test a model, llama2 is also the default, so works without parameters
+    test_ollama_model(model="llama2")  
 
-  # initialize llama-index settings
-  initialize_llm_settings(model="llama2")
-  # We check here if ollama is set up and it executes fine with basic generation
-  query_engine = setup_vector_index().as_query_engine()    
-  execute_query(query_engine, "What is SEBI and what are its responsibilities?")
+    # initialize llama-index settings
+    initialize_llm_settings(model="llama2")
+    # We check here if ollama is set up and it executes fine with basic generation
+    query_engine = setup_vector_index().as_query_engine(response_mode="compact")    
+    execute_query(query_engine, "What is SEBI and what are its responsibilities?")
 
-  # Let us run our Rag Evaluations
-  run_rag_evaluations()
-
+    # Let us run our Rag Evaluations
+    run_rag_evaluations()
+    
+    
   
 if __name__ == "__main__":
     main()

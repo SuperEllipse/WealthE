@@ -8,3 +8,4 @@ EVAL_DATA_DIR = os.path.join(DATA_DIR, "questions")
 IMAGE_DIR = os.path.join(DATA_DIR, "images")
 VECTORDB_COLLECTION ="quickstart-ollama"
 OLLAMA_BASE_URL=os.getenv("OLLAMA_BASE_URL")
+UTILS_DIR = os.path.join(BASE_DIR, "utils")

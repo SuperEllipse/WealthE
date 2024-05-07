@@ -73,7 +73,7 @@ async def start():
   memory = ChatMemoryBuffer.from_defaults(token_limit=32000)
 #  chat_engine = index.as_chat_engine()
   chat_engine = index.as_chat_engine(
-      chat_mode="context",
+      chat_mode="condense_plus_context",
       memory=memory,
       system_prompt=(
           "You are a chatbot, able to have normal interactions, as well as talk"
