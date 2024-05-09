@@ -11,19 +11,8 @@ import chromadb
 import ollama
 import pandas as pd
 import mlflow
-#Evaluation Specific imports
-from trulens_eval import TruLlama
-from trulens_eval import Tru, Feedback, Select
-from trulens_eval.feedback.provider.litellm import LiteLLM
-from trulens_eval.app import App
-from trulens_eval.feedback import Groundedness
-# we initialise the Tru object as a global object
-tru = Tru()
-tru.reset_database()
-
 
 # Adding project utilities DEBUG ONLY CAN BE REMOVED LATER
-os.chdir(os.getenv("HOME"))
 
 import importlib
 import utils.configs
@@ -40,8 +29,24 @@ logger = get_logger(__name__)
 from utils.configs import (
     BASE_DIR, DATA_DIR, EVAL_DATA_DIR, RAW_DATA_DIR, 
     INDEX_DIR, DB_DIR, VECTORDB_COLLECTION, IMAGE_DIR,
-    OLLAMA_BASE_URL,
-    )
+    OLLAMA_BASE_URL, DEFAULT_LLM ,TRULENS_DB_PATH,TRULENS_DB_URL,
+    LLM_EXPERIMENT_NAME,
+
+)
+#Evaluation Specific imports
+from trulens_eval import TruLlama
+from trulens_eval import Tru, Feedback, Select
+from trulens_eval.feedback.provider.litellm import LiteLLM
+from trulens_eval.app import App
+from trulens_eval.feedback import Groundedness
+# we initialise the Tru object as a global object
+# A small trick to ensure that the default database is persisted in the right directory
+#os.chdir(TRULENS_DB_PATH)
+tru = Tru(database_url=TRULENS_DB_URL)
+tru.reset_database()
+#Change the db back to base directory This trick is only to make sure trulens database is created in the right directory
+#os.chdir(BASE_DIR)
+
 from utils.llm_helper import (
   is_process_running,
   validate_runtime,
@@ -50,6 +55,9 @@ from utils.llm_helper import (
   initialize_llm_settings,
   )
 
+#define the model we will use 
+llm_model = os.environ.get("LLM", DEFAULT_LLM)
+logger.info(f"INFO: Selected model is {llm_model}")
 
 def setup_vector_index():
     """
@@ -96,12 +104,14 @@ def setup_feedback_system(query_engine):
 
     
     provider = LiteLLM()
-    provider.model_engine = "ollama/llama2"
+   # provider.model_engine = "ollama/llama2"
+    provider.model_engine = f"ollama/{llm_model}"
     provider.completion_args = {"api_base": OLLAMA_BASE_URL}
     
     context = App.select_context(query_engine)
     groundedness_provider = LiteLLM()
-    groundedness_provider.model_engine = "ollama/llama2"
+    #groundedness_provider.model_engine = f"ollama/{llm_model}"
+    groundedness_provider.model_engine = f"ollama/gemma:2b"
     groundedness_provider.completion_args = {"api_base": os.environ["OLLAMA_BASE_URL"]}
     
     grounded = Groundedness(groundedness_provider=groundedness_provider)
@@ -167,24 +177,6 @@ def get_records_and_tru_feedback(app="Baseline"):
     return records[["input", "output"] + feedback]
 
 
-def evaluate(query_engine,tru_query_engine_recorder,app,  questions):
-    """
-    Evaluate the RAG Application performance performance
-    Parameters:
-    query_engine: Llama index query_engine engine interface
-    app (string ): the application name that you need to evaluate. This is stored in the leaderboard for reference
-    filename: The filename including the full path containing the list of questions
-
-    """
-    eval_questions= read_questions_from_file(filename)
-    display(eval_questions)
-    feedbacks = setup_feedback(query_engine, app)
-
-    for question in eval_questions:
-        with tru_query_engine_recorder as recording:
-            query_engine.query(question)
-
-
 def run_rag_evaluations():
     """
     We run 3 different type of Indexes and use our RAG Triad to measure performance against different ways of Prompting the LLMs
@@ -228,7 +220,7 @@ def run_rag_evaluations():
     sentence_window_engine_1 = get_sentence_window_query_engine( sentence_window_index_1)
     tru_recorder_baseline = get_prebuilt_trulens_recorder(
                               sentence_window_engine_1,
-                              app_id ='sentence window engine 1', feedbacks=feedbacks)
+                              app_id ='sentence windowsize 1', feedbacks=feedbacks)
 
     run_evals(eval_questions, tru_recorder_baseline, sentence_window_engine_1)
     tru.get_leaderboard(app_ids=[])
@@ -238,7 +230,7 @@ def run_rag_evaluations():
     sentence_window_engine_3 = get_sentence_window_query_engine( sentence_window_index_3)
     tru_recorder_3 = get_prebuilt_trulens_recorder(
                               sentence_window_engine_3,
-                              app_id ='sentence window engine 3', feedbacks=feedbacks)
+                              app_id ='sentence windowsize 3', feedbacks=feedbacks)
     
     run_evals(eval_questions, tru_recorder_3, sentence_window_engine_3)
     tru.get_leaderboard(app_ids=[])
@@ -255,7 +247,7 @@ def run_rag_evaluations():
 
     tru_recorder_AM_1 = get_prebuilt_trulens_recorder(
         auto_merging_engine_0,
-        app_id ='Merging Index 2048 & 512', feedbacks=feedbacks
+        app_id ='Merging Index (chunksize:2048 & 512)', feedbacks=feedbacks
     )
 
     run_evals(eval_questions, tru_recorder_AM_1, auto_merging_engine_0)
@@ -279,18 +271,17 @@ def run_rag_evaluations():
 
     tru_recorder_AM_2 = get_prebuilt_trulens_recorder(
         auto_merging_engine_1,
-        app_id ='Merging Index 2048 & 512 & 128', feedbacks=feedbacks
+        app_id ='Merging Index(chunksize: 2048,512,128)', feedbacks=feedbacks
     )
 
     run_evals(eval_questions, tru_recorder_AM_2, auto_merging_engine_1)
 
     tru.get_leaderboard(app_ids=[])  
     
-    exp_name = "LLM Evaluations for RAG"
-    save_evaluations_in_mlflow(exp_name)
-
-    
-def save_evaluations_in_mlflow (exp_name):
+  
+    save_evaluations_in_mlflow(LLM_EXPERIMENT_NAME, eval_questions)
+   
+def save_evaluations_in_mlflow (exp_name, eval_questions):
     """
     This functions persists the TRIAD metrics into the mlflow experiments
     """
@@ -301,7 +292,7 @@ def save_evaluations_in_mlflow (exp_name):
     df = tru.get_leaderboard(app_ids=[])
     for index,row in df.iterrows():
       mlflow.start_run()
-      mlflow.set_tag("model_name", Settings.llm.model)
+      mlflow.set_tag("model_name", llm_model)
       mlflow.log_param("eval_data", eval_questions)
       mlflow.log_param("app_id", index)
       mlflow.log_metric("context_relevance_with_cot_reasons", round(row["context_relevance_with_cot_reasons"],2))
@@ -324,10 +315,10 @@ def  main():
         start_ollama_service()
     
     # Test a model, llama2 is also the default, so works without parameters
-    test_ollama_model(model="llama2")  
+    test_ollama_model(model=llm_model)  
 
     # initialize llama-index settings
-    initialize_llm_settings(model="llama2")
+    initialize_llm_settings(model=llm_model)
     # We check here if ollama is set up and it executes fine with basic generation
     query_engine = setup_vector_index().as_query_engine(response_mode="compact")    
     execute_query(query_engine, "What is SEBI and what are its responsibilities?")

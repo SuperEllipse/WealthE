@@ -1,0 +1,14 @@
+2024-05-09 12:27:32 UTC | INFO | INFO : ollama exists
+2024-05-09 12:27:32 UTC | INFO | INFO: pulling llama2 from Ollama library
+2024-05-09 12:27:52024-05-09 12:28:07 UTC | INFO | INFO: Loading the Index
+2024-05-09 12:29:26 UTC | INFO | INFO: running RAG Evaluations
+2024-05-09 12:29:26 UTC | INFO | INFO: Loading the documents
+2024-05-09 12:29:26 UTC | INFO | INFO: Loading the Index
+2024-05-09 12:29:26 UTC | INFO | INFO: Setting up feedback loops
+2024-05-09 12:38:55 UTC | INFO | INFO: running RAG Evaluations
+2024-05-09 12:38:55 UTC | INFO | INFO: Loading the documents
+2024-05-09 12:38:55 UTC | INFO | INFO: Loading the Index
+2024-05-09 12:38:55 UTC | INFO | INFO: Setting up feedback loops
+2024-05-09 12:49:30 UTC | INFO | INFO: Persisting in mlflow
+2024-05-09 12:53:51 UTC | INFO | INFO: Persisting in mlflow
+2024-05-09 12:54:19 UTC | INFO | INFO: Persisting in mlflow

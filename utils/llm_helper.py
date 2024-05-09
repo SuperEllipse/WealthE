@@ -10,7 +10,7 @@ sys.path.append('/home/cdsw/utils')
 import imp
 import logging_config
 imp.reload(logging_config)
-
+from utils.configs import DEFAULT_LLM, OLLAMA_BASE_URL, DEFAULT_EMBEDDING_MODEL
 # Get the shared logger
 from logging_config import get_logger
 logger = get_logger(__name__)
@@ -121,13 +121,13 @@ def start_ollama_service(log_file=None):
                 serve_process.terminate()
             sys.exit(1)
 
-def test_ollama_model(model="llama2"): 
+def test_ollama_model(model=DEFAULT_LLM): 
     """
     Call model and test how long it takes to invoke
     """
     # Code block to measure time to load model
     start_time = time.time()
-    # let us load LLAMA2
+    # let us load the model
     logger.info(f"INFO: pulling {model} from Ollama library")
     os.system(f"ollama pull {model}")
 
@@ -144,12 +144,12 @@ def test_ollama_model(model="llama2"):
     elapsed_time = end_time - start_time
     logger.info(f"INFO: Model Loaded and response, Time required: {elapsed_time:.6f} seconds")
 
-def initialize_llm_settings(model="llama2", embed_model = "BAAI/bge-small-en-v1.5",base_url=os.environ["OLLAMA_BASE_URL"]):
+def initialize_llm_settings(model=DEFAULT_LLM, embed_model = "BAAI/bge-small-en-v1.5",base_url=os.environ["OLLAMA_BASE_URL"]):
     """
     Initializes and configures settings for the Ollama instance.
     """
-    Settings.llm = Ollama(model="llama2", request_timeout=10000)
-    Settings.llm.base_url = "http://127.0.0.1:8080"
-    Settings.embed_model = FastEmbedEmbedding(model_name="BAAI/bge-small-en-v1.5")
+    Settings.llm = Ollama(model=model, request_timeout=10000)
+    Settings.llm.base_url = OLLAMA_BASE_URL
+    Settings.embed_model = FastEmbedEmbedding(model_name=DEFAULT_EMBEDDING_MODEL)
     
 

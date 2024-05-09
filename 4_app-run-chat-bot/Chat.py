@@ -24,6 +24,13 @@ import imp
 #chainlit is our chat platform
 import chainlit as cl
 
+from utils.configs import (
+    BASE_DIR, DATA_DIR, EVAL_DATA_DIR, RAW_DATA_DIR, 
+    INDEX_DIR, DB_DIR, VECTORDB_COLLECTION, IMAGE_DIR,
+    OLLAMA_BASE_URL, DEFAULT_LLM ,DEFAULT_CHAT_MODE, 
+
+    )
+
 # Get the shared logger
 from utils.logging_config import get_logger
 logger = get_logger(__name__)
@@ -35,6 +42,10 @@ from utils.llm_helper import (
   initialize_llm_settings,
   )
 
+#define the model we will use 
+llm_model = os.environ.get("LLM", DEFAULT_LLM)
+logger.info(f"INFO: Selected model is {llm_model}")
+
 #validate the right runtime is selected
 validate_runtime()
 # Check if the 'ollama' process is already running
@@ -44,7 +55,7 @@ if is_process_running('ollama'):
 else:
   start_ollama_service()
 # Test a model, llama2 is also the default, so works without parameters
-test_ollama_model(model="llama2")
+test_ollama_model(model=llm_model)
   
 #We will use Chainlit for our conversations
 
@@ -54,10 +65,10 @@ async def start():
   
   logger.info("INFO : Inside On chat start")
 
-  initialize_llm_settings(model="llama2")
+  initialize_llm_settings(model=llm_model)
   # load index from disk: Assumes that the bootstrap.py job has been run
-  db2 = chromadb.PersistentClient(path="/home/cdsw/assets/data/chroma_db")
-  chroma_collection = db2.get_or_create_collection("quickstart-ollama")
+  db2 = chromadb.PersistentClient(path=DB_DIR)
+  chroma_collection = db2.get_or_create_collection(VECTORDB_COLLECTION)
   vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
 
 
@@ -73,7 +84,7 @@ async def start():
   memory = ChatMemoryBuffer.from_defaults(token_limit=32000)
 #  chat_engine = index.as_chat_engine()
   chat_engine = index.as_chat_engine(
-      chat_mode="condense_plus_context",
+      chat_mode=DEFAULT_CHAT_MODE,
       memory=memory,
       system_prompt=(
           "You are a chatbot, able to have normal interactions, as well as talk"
@@ -88,12 +99,12 @@ async def start():
   
   #set up Chainlit session
   cl.user_session.set("chat_engine", chat_engine)
-  image = cl.Image(path="/home/cdsw/assets/images/Llama2.jpg", name="image1", display="inline")
+  #image = cl.Image(path="/home/cdsw/assets/images/Llama2.jpg", name="image1", display="inline")
 
   # Attach the image to the message
   await cl.Message(
-      content="You have started a chat with LLama2 Model augmented for Personal Finance.\n This SHOULD NOT be construed as Investment Advise!",
-      elements=[image],
+      content=f"You have started a chat with {llm_model} Model augmented for Personal Finance.\n This SHOULD NOT be construed as Investment Advise!",
+#      elements=[image],
   ).send()
   
 @cl.on_message

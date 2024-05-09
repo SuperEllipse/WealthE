@@ -3,13 +3,13 @@ import logging
 import os
 import pytz
 from datetime import datetime
-
+from configs import LOG_PATH
 def get_logger(name):
     # Get the current working directory
     cwd = os.getcwd()
 
     # Create a file handler and set the mode to 'w' to purge the log file
-    file_handler = logging.FileHandler(os.path.join(cwd, 'app.log'), mode='w')
+    file_handler = logging.FileHandler(os.path.join(LOG_PATH,'app.log'), mode='w')
     file_handler.setLevel(logging.DEBUG)
 
     # Create a formatter with the timestamp in IST timezone
