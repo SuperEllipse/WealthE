@@ -38,7 +38,7 @@ from utils.llm_helper import (
   is_process_running,
   validate_runtime,
   start_ollama_service, 
-  test_ollama_model,
+  pull_ollama_model,
   initialize_llm_settings,
   )
 
@@ -55,7 +55,7 @@ if is_process_running('ollama'):
 else:
   start_ollama_service()
 # Test a model, llama2 is also the default, so works without parameters
-test_ollama_model(model=llm_model)
+pull_ollama_model(model=llm_model)
   
 #We will use Chainlit for our conversations
 

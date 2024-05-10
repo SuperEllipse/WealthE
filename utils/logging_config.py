@@ -3,7 +3,7 @@ import logging
 import os
 import pytz
 from datetime import datetime
-from configs import LOG_PATH
+from utils.configs import LOG_PATH
 def get_logger(name):
     # Get the current working directory
     cwd = os.getcwd()

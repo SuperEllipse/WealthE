@@ -10,7 +10,7 @@ from IPython.display import Markdown, display
 import chromadb
 import ollama
 import pandas as pd
-import mlflow
+
 
 # Adding project utilities DEBUG ONLY CAN BE REMOVED LATER
 
@@ -51,7 +51,7 @@ from utils.llm_helper import (
   is_process_running,
   validate_runtime,
   start_ollama_service, 
-  test_ollama_model,
+  pull_ollama_model,
   initialize_llm_settings,
   )
 
@@ -88,13 +88,14 @@ def load_documents(directory):
     return SimpleDirectoryReader(directory).load_data()
   
   
-def setup_feedback_system(query_engine):
+def setup_feedback_system(query_engine, eval_llm_model="llama2"):
     """
     Sets up feedback mechanisms using Trulens and LiteLLM providers.
     
     Inputs:
     
     query_engine( Llamaindex query_engine Interface): Takes the query engine to be used for setting up feedbacks
+    eval_mode: Evaluation model name that will be used here defaults to llam2
     app(string): Name of the LLM Application. This will be later used leader board
     
     Returns:
@@ -110,8 +111,8 @@ def setup_feedback_system(query_engine):
     
     context = App.select_context(query_engine)
     groundedness_provider = LiteLLM()
-    #groundedness_provider.model_engine = f"ollama/{llm_model}"
-    groundedness_provider.model_engine = f"ollama/gemma:2b"
+    groundedness_provider.model_engine = f"ollama/{llm_model}"
+    #groundedness_provider.model_engine = f"ollama/gemma:2b"
     groundedness_provider.completion_args = {"api_base": os.environ["OLLAMA_BASE_URL"]}
     
     grounded = Groundedness(groundedness_provider=groundedness_provider)
@@ -190,6 +191,11 @@ def run_rag_evaluations():
 
     """
     logger.info("INFO: running RAG Evaluations")    
+    
+    #Change the eval_llm_model name to llama2 or anything else you want.
+    eval_llm_model = DEFAULT_LLM
+    pull_ollama_model(model=eval_llm_model)  
+    
     #load the documents to be used by the RAG
     documents =load_documents(directory=RAW_DATA_DIR)
     
@@ -200,6 +206,7 @@ def run_rag_evaluations():
     eval_questions = read_questions_from_file(questions_file)
     display(eval_questions)
     #Run Baseline
+    logger.info("INFO: Starting Baseline Evaluations") 
     baseline_query_engine = setup_vector_index().as_query_engine()  
 
     #first setup the feedback systems
@@ -211,11 +218,13 @@ def run_rag_evaluations():
 
     run_evals(eval_questions, tru_recorder_baseline, baseline_query_engine)
     display(get_records_and_tru_feedback("Baseline"))
-    tru.get_leaderboard(app_ids=[])   
+    df = tru.get_leaderboard(app_ids=[])   
+    logger.info("INFO: Ran Baseline Evaluations") 
+    logger.info(f"LEADER BOARD: \n {df}")
 
-    
     #Run Sentence Window Indexer of window size 1    
     # Let us go through these guestions now for sentencewindowNode Parser
+    logger.info("INFO: Starting SentenceWindowsize 1 Evaluations") 
     sentence_window_index_1 = build_sentence_window_index(documents, save_dir=os.path.join(INDEX_DIR,"sentence_index1"), window_size=1)
     sentence_window_engine_1 = get_sentence_window_query_engine( sentence_window_index_1)
     tru_recorder_baseline = get_prebuilt_trulens_recorder(
@@ -223,9 +232,12 @@ def run_rag_evaluations():
                               app_id ='sentence windowsize 1', feedbacks=feedbacks)
 
     run_evals(eval_questions, tru_recorder_baseline, sentence_window_engine_1)
-    tru.get_leaderboard(app_ids=[])
-    
+    df=tru.get_leaderboard(app_ids=[])
+    logger.info("INFO: Ran Sentence Window size 1 Evaluations") 
+    logger.info(f"LEADER BOARD: \n {df}")
+        
     # let us go through a window size of 3
+    logger.info("INFO: Starting SentenceWindowsize 3 Evaluations") 
     sentence_window_index_3 = build_sentence_window_index(documents, save_dir=os.path.join(INDEX_DIR,"sentence_index3"), window_size=3)
     sentence_window_engine_3 = get_sentence_window_query_engine( sentence_window_index_3)
     tru_recorder_3 = get_prebuilt_trulens_recorder(
@@ -233,7 +245,11 @@ def run_rag_evaluations():
                               app_id ='sentence windowsize 3', feedbacks=feedbacks)
     
     run_evals(eval_questions, tru_recorder_3, sentence_window_engine_3)
-    tru.get_leaderboard(app_ids=[])
+    df=tru.get_leaderboard(app_ids=[])
+    logger.info("INFO: Ran Sentence Window size 3 Evaluations") 
+    logger.info(f"LEADER BOARD: \n {df}")
+    
+    logger.info("INFO: Starting Merging Index(2048, 512)  Evaluations") 
 
     auto_merging_index_0 = build_automerging_index(documents,save_dir=os.path.join(INDEX_DIR, "merging_index_0"), chunk_sizes=[2048,512],
     )
@@ -253,7 +269,9 @@ def run_rag_evaluations():
     run_evals(eval_questions, tru_recorder_AM_1, auto_merging_engine_0)
 
     # run Evals
-    tru.get_leaderboard(app_ids=[])
+    df=tru.get_leaderboard(app_ids=[])
+    logger.info("INFO: Ran Merging Index(2048, 512)  Evaluations") 
+    logger.info(f"LEADER BOARD: \n {df}")
 
 
     #Now using 3 Layers of Automerging
@@ -268,7 +286,7 @@ def run_rag_evaluations():
         similarity_top_k=12,
         rerank_top_n=6,
     )
-
+    logger.info("INFO: Starting Merging Index( 2048,512,128)  Evaluations") 
     tru_recorder_AM_2 = get_prebuilt_trulens_recorder(
         auto_merging_engine_1,
         app_id ='Merging Index(chunksize: 2048,512,128)', feedbacks=feedbacks
@@ -276,19 +294,24 @@ def run_rag_evaluations():
 
     run_evals(eval_questions, tru_recorder_AM_2, auto_merging_engine_1)
 
-    tru.get_leaderboard(app_ids=[])  
-    
+    df=tru.get_leaderboard(app_ids=[])  
+    df=tru.get_leaderboard(app_ids=[])
+    logger.info("INFO: Ran Merging Index(chunksize: 2048,512,128)  Evaluations") 
+    logger.info(f"LEADER BOARD: \n {df}")
   
+    logger.info("INFO: Starting persistence to MLFlow") 
     save_evaluations_in_mlflow(LLM_EXPERIMENT_NAME, eval_questions)
    
 def save_evaluations_in_mlflow (exp_name, eval_questions):
     """
     This functions persists the TRIAD metrics into the mlflow experiments
     """
+    import mlflow
     # Add a try catch block
-    logger.info("INFO: Persisting in mlflow")    
+    logger.info("INFO: Setting MLFlow Experiments")    
     # Evaluations are stored as a data frame by Tru Lens
     mlflow.set_experiment(exp_name)
+    logger.info("INFO: Setting MLFlow Experiments")      
     df = tru.get_leaderboard(app_ids=[])
     for index,row in df.iterrows():
       mlflow.start_run()
@@ -300,7 +323,7 @@ def save_evaluations_in_mlflow (exp_name, eval_questions):
       mlflow.log_metric("groundedness_measure_with_cot_reasons", round(row["groundedness_measure_with_cot_reasons"],2))
       mlflow.log_metric("latency", row["latency"])
       mlflow.end_run()   
-
+    logger.info("INFO: Finished persisting to MLFlow Experiments")    
   
 def  main():
 
@@ -315,7 +338,7 @@ def  main():
         start_ollama_service()
     
     # Test a model, llama2 is also the default, so works without parameters
-    test_ollama_model(model=llm_model)  
+    pull_ollama_model(model=llm_model)  
 
     # initialize llama-index settings
     initialize_llm_settings(model=llm_model)
