@@ -24,7 +24,7 @@ logger.info("This is an informational message.")
 
 #chainlit_app_file = "~/scripts/Query.py"
 #chainlit_app_file = "~/scripts/Chat.py"
-chainlit_app_file = "4_app-run-chat-bot/Chat.py"
+chainlit_app_file = "6_app-run-chat-bot/Chat.py"
 
 
 print(f"Access the chainlit application here:\n https://read-only-{os.environ['CDSW_ENGINE_ID']}.{os.environ['CDSW_DOMAIN']}")
