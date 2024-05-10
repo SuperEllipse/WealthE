@@ -96,8 +96,8 @@ def start_ollama_service(log_file=None):
     if os.path.exists(entrypoint_file):
         # Start /entrypoint.sh as a background process using /usr/bin/bash
         try:
-            serve_process = subprocess.Popen(["/usr/bin/bash", entrypoint_file])
-            #added this since it takes a bit to get ollama service running
+            serve_process = subprocess.Popen(["/usr/bin/bash", entrypoint_file], stdout=stdout, stderr=stderr)
+            #added this since it takes a bit to get ollama service running 
             time.sleep(3)
             print(f"Started {entrypoint_file} as a background process.")
             logger.info(f"INFO : Started {entrypoint_file} as a background process.")
@@ -110,7 +110,7 @@ def start_ollama_service(log_file=None):
     else:
         # Start ollama serve as a background process
         try:
-            serve_process = subprocess.Popen(["ollama", "serve"])
+            serve_process = subprocess.Popen(["ollama", "serve"], stdout=stdout, stderr=stderr)
             #added this since it takes a bit to get ollama service running
             print("Started ollama serve as a background process.")
             logger.info(f"INFO : {entrypoint_file} not existing so started ollama manually as a background process.")
@@ -121,9 +121,10 @@ def start_ollama_service(log_file=None):
                 serve_process.terminate()
             sys.exit(1)
 
-def test_ollama_model(model=DEFAULT_LLM): 
+def pull_ollama_model(model=DEFAULT_LLM ): 
     """
     Call model and test how long it takes to invoke
+    model :  Name of the Model to pull
     """
     # Code block to measure time to load model
     start_time = time.time()
