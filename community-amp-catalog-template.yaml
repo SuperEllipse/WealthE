@@ -1,7 +1,7 @@
 name: Community
 entries:
-  - title: Dhan(Wealth)-bot : A self-hosted localized LLM based FinBot with Memory and evaluation
-    label:finbot-ollama
+  - title: Dhan(Wealth)-bot , A self-hosted localized LLM based FinBot with Memory and evaluation
+    label: finbot-ollama
     short_description: |
       This AMP uses the increasingly popular Ollama service to create selfhosted LLM Bot on a localized environment
     long_description: |
