@@ -1,44 +1,27 @@
 name: Community
 
 entries:
-  - title: AMP Name Here
-    label: Github-repo-name-here
+  - title: Dhan-bot : A self-hosted localized LLM based FinBot with Memory and evaluation
+    label:finbot-ollama
     short_description: |
-        Short description of what the AMP does.
+        This AMP uses the increasingly popular Ollama service to create selfhosted LLM Bot on a localized environment
     long_description: |
-        Long description of what the AMP does.
+       This AMP uses Ollama hosted service to localized LLM that is contextualized with a Financial Knowledge System. Dhan stands for
+       Wealth in Sanksrit. This AMP uses llama3 to provide ChatGPT style Chat interface with memory on a localized varsity dataset. We
+       also demnonstrate use of Trulens to evaluate the quality of response by the LLM.
     long_description_html: |
-        Long description of what the AMP does.
+       This AMP uses Ollama hosted service to localized LLM that is contextualized with a Financial Knowledge System. Dhan stands for
+       Wealth in Sanksrit. This AMP uses llama3 to provide ChatGPT style Chat interface with memory on a localized varsity dataset using 
+       chainlit. We also demnonstrate use of Trulens to evaluate the quality of response by the LLM.
     image_path: >-
-      https://raw.githubusercontent.com/githubusername/githubrepo/main/path/to/amp/cover.png
+       https://github.com/SuperEllipse/finbot-ollama/blob/main/assets/images/dhanbot.jpg
     tags:
-      - Sample
-      - Tags
-      - Used
-      - As
-      - Identifiers
-    git_url: 'https://github.com/githubusername/githubrepo'
-    is_prototype: true
-    is_community: true
-    is_new: true
-
-  - title: A different AMP Name Here
-    label: Github-repo-name-here
-    short_description: |
-        Short description of what the AMP does.
-    long_description: |
-        Long description of what the AMP does.
-    long_description_html: |
-        Long description of what the AMP does.
-    image_path: >-
-      https://raw.githubusercontent.com/githubusername/githubrepo/main/path/to/amp/cover.png
-    tags:
-      - Sample
-      - Tags
-      - Used
-      - As
-      - Identifiers
-    git_url: 'https://github.com/githubusername/githubrepo'
+      - ollama
+      - llamaindex
+      - llama3
+      - chainlit
+      - Trulens
+    git_url: 'https://github.com/SuperEllipse/finbot-ollama'
     is_prototype: true
     is_community: true
     is_new: true

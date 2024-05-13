@@ -1,25 +1,42 @@
-name: AMP Name Here
-description: Short description of what the AMP does.
-author: Your name or company name here
+name: Finbot that holds conversation memory with performance evaluation
+description: A Finance educator bot trained on financial markets knowledge system, that answers Q&A.
+author: Vish Rajagopalan
 specification_version: 1.0
 prototype_version: 1.0
-date: "YYYY-MM-DD"
+date: "2024-05-10"
 
 environment_variables:
-  RANDOM_VARIABLE_NAME:
-    default: "DEFAULT-VALUE"
-    description: "A description providing user clarifying information about the variable."
-    required: false
+  LLM:
+    default: "llama3"
+    description: "Define the Large language model to be pulled by Ollama"
+    required: True
+
+  OLLAMA_HOST:
+  default: "127.0.0.1:8080"
+  description: "Define the Large language model to be pulled by Ollama"
+  required: True
+
+  OLLAMA_PORT:
+  default: "8080"
+  description: "Define the port to be used by Ollama service"
+  required: True
+
+  # The OLLAMA BASE URL should be of the format http://OLLAMA_HOST in case you are changing the host and the port values
+  # the value below should also be changed
+  OLLAMA_BASE_URL:
+  default: "http://127.0.0.1:8080"
+  description: "Define the Large language model to be pulled by Ollama"
+  required: True  
 
 runtimes:
-  - editor: Workbench ## Other acceptable values are determined by the runtimes available in your CML environment
-    kernel: Python 3.10 ## Same here, check your runtimes (custom runtimes can be added as well)
-    edition: Standard ## Particularly relevant if using GPUs, Nvidia GPU
+  - editor: PBJ Workbench ## Other acceptable values are determined by the runtimes available in your CML environment
+    kernel: Python 3.11 ## Same here, check your runtimes (custom runtimes can be added as well)
+    edition: NVIDIA GPU Ollama ## Particularly relevant if using GPUs, Nvidia GPU
 
 ## Below are some sample tasks based on some of the most popular aspects of AMP creation.
 tasks:
 
-  ## SESSION related AMP snippet
+  ## Step 0: SESSION to install dependecies
   - type: run_session
     name: Install Dependencies
     script: 0_session-install-dependencies/install_dependencies.py
@@ -28,59 +45,60 @@ tasks:
     cpu: 2
     memory: 4
 
-  ## JOB related AMP snippet
+  ## Step 1: JOB related AMP Ingest Dataset
   - type: create_job
-    name: Sample Job
-    entity_label: sample_job
-    script: 1_job-run-python-job/job.py
+    name: Ingest Dataset
+    entity_label: create_dataset_job
+    script: 1_job-ingest-dataset/site_scrapper.py
     arguments: None
-    cpu: 1
+    cpu: 2
     memory: 4
     short_summary: Create job to install project dependencies.
     environment:
       TASK_TYPE: CREATE/RUN_JOB
 
-  - type: run_job
-    entity_label: sample_job
-    short_summary: Short summary here about running the job you just created.
+  ## Step 2: JOB related to set up Vector DB
+  - type: create_job
+    name: Create Vector Database
+    entity_label: create_vectordb_job
+    script: 2_job-create-vector-db/bootstrap_ollama.py
+    arguments: None
+    cpu: 2
+    memory: 4
+    short_summary: Create job to install project dependencies.
+    environment:
+      TASK_TYPE: CREATE/RUN_JOB
 
-  ## MODEL related AMP snippet
-  - type: create_model
-    name: model-name
-    entity_label: sample-model-entity-label
-    description: create sample model hosted in CML. 
-    short_summary: Model name
-    default_resources:
-      cpu: 2
-      memory: 4
-      gpu: 1
-    default_replication_policy:
-      type: fixed
-      num_replicas: 1
-  
-  - type: build_model
-    name: Build Sample model
-    entity_label: sample-model-entity-label
-    comment: First build by the AMP
-    examples:
-      - request:
-          prompt: What is Cloudera?
-          temperature: 0
-          max_new_tokens: 50
-          repetition_penalty: 0.5
+  ## Step 3 : Build the Evaluations dashboard
+  - type: run_session
+    name: LLM Evaluation using the Trulens Dashboard
+    short_summary: Use Trulens to evaluate our LLM based on the evaluation questions in assets/data/questions/evaluation_questions.txt.
+    long_summary: We use the RAG Triad of Relevance, Groundednes and Context Relevance explained in the README to evaluate our LLM.
+    script: 3_session-evaluate-llm/evaluation.py
+    cpu: 8
+    memory: 32
+    gpu: 1
 
-    target_file_path: 2_model-deploy-model/launch-model.py
-    target_function_name: api_wrapper
+  ## Step 4: Save Evaluations in Mlflow for traceability and reproducability
+  - type: run_session
+    name: Save evaluations in mlflow
+    entity_label: create_saveevaluations_session
+    script: 5_session-save-evaluations-in-mlflow/persist.py
+    arguments: None
+    cpu: 2
+    memory: 4
+    short_summary: Log the evaluations in Mlflow
 
-  - type: deploy_model
-    entity_label: sample-model-entity-label
-
-  ## APPLICATION related AMP snippet
+  ## Step 5:  Run Finbot
   - type: start_application
-    name: Application Name here
-    short_summary: Write a short summary of the app here.
-    long_summary: Write a longer summary about the app here.
-    subdomain: pick-a-domain-here
+    name: LLM Evaluation using the Trulens Dashboard
+    short_summary: Use Trulens to evaluate our LLM based on the evaluation questions in assets/data/questions/evaluation_questions.txt.
+    long_summary: We use the RAG Triad of Relevance, Groundednes and Context Relevance explained in the README to evaluate our LLM.
+    subdomain: llm-dashboard
     script: 3_app-run-python-script/app.py
+    cpu: 8
+    memory: 32
+    gpu: 1
     environment_variables:
       TASK_TYPE: START_APPLICATION
+  
