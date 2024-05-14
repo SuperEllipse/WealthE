@@ -4,7 +4,7 @@ entries:
     label: finbot-ollama
     short_description: |
       Dhan symbolizes Wealth in Sanksrit language. This AMP uses Ollama & llama3 to create self-hosted LLM based Finance Educator App. It uses a
-      ChatGPT style interface that keeps memory of conversation
+      ChatGPT style interface that holds conversational memory.
     long_description: |
       This AMP uses Ollama hosted service to localized LLM that is contextualized with a Financial Knowledge System. Dhan stands for
       Wealth in Sanksrit. This AMP uses llama3 to provide ChatGPT style Chat interface contextualized to a dataset on Capital markets in Indian Context
