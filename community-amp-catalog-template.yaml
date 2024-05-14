@@ -9,6 +9,8 @@ entries:
       This AMP uses Ollama LLM service to create a Wealth Educator application contextualized for Indian Capital Markets(hence the name Dhan i.e. Wealth).The AMP uses llama3 to provide ChatGPT style interface that holds conversational memory. In addition we demonstrate LLM Ops through prompt evaluation using TruLens and Mlflow frameworks.
     long_description_html: |
       This AMP uses Ollama LLM service to create a Wealth Educator application contextualized for Indian Capital Markets(hence the name Dhan i.e. Wealth).The AMP uses llama3 to provide ChatGPT style interface that holds conversational memory. In addition we demonstrate LLM Ops through prompt evaluation using TruLens and Mlflow frameworks.
+    image_path: >-
+      https://raw.githubusercontent.com/superellipse/finbot-ollama/main/assets/images/Dhanbot-small.jpg    
     tags:
       - ollama
       - llamaindex
