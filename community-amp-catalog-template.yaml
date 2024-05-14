@@ -1,11 +1,10 @@
 name: Community
 entries:
-  - title: A self-hosted localized Finance Educator LLM on Ollama & llama3
+  - title: A self-hosted Finance GenAI App using Ollama & llama3
     label: finbot-ollama
     short_description: |
-      Dhan stands for Wealth in Sanksrit. This AMP uses the increasingly popular Ollama service to create self-hosted LLM Bot on a localized environment. It uses a
-      ChatGPT style interface that holds the memory of earlier questions. We also use Trulens, a framework to evaluate the performance of LLM
-      responses
+      Dhan symbolizes Wealth in Sanksrit language. This AMP uses Ollama & llama3 to create self-hosted LLM based Finance Educator App. It uses a
+      ChatGPT style interface that keeps memory of conversation
     long_description: |
       This AMP uses Ollama hosted service to localized LLM that is contextualized with a Financial Knowledge System. Dhan stands for
       Wealth in Sanksrit. This AMP uses llama3 to provide ChatGPT style Chat interface contextualized to a dataset on Capital markets in Indian Context
