@@ -15,7 +15,7 @@ entries:
       Wealth in Sanksrit. This AMP uses llama3 to provide ChatGPT style Chat interface contextualized to a dataset on Capital markets in Indian Context
       (hence the name Dhan i.e. Wealth). We also demnonstrate use of Trulens to evaluate the quality of response by the LLM.
     image_path: >-
-      https://github.com/SuperEllipse/finbot-ollama/blob/0d10ad99be584be7097bca38b39c71b10dac63b0/assets/images/Dhan-bot1.jpg
+      https://raw.githubusercontent.com/superellipse/finbot-ollama/main/assets/images/Dhan-bot1.jpg
     tags:
       - ollama
       - llamaindex
