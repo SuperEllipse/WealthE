@@ -1,8 +1,8 @@
-# Dhan-Bot:  A localized Finance-educator-bot with memory and evaluation, augmented with context of Indian Capital Markets.  
+# Dhan-Bot:  A localized Wealth-Educator-bot with memory augmented with context of Indian Capital Markets.  
 
-![](./assets/images/dhanbot.jpg)
+![](./assets/images/Dhan-bot1.jpg)
 ## Disclaimer ##
-**IMPORTANT :** This is an example of a local Finance ChatBot augmented with knowledge context, in this case around Indian Capital Markets. The intent is to demonstrate how to build context aware LLM applications for a specific knowledge domain with evaluations. This applicagion should **NOT BE CONSTRUED OR USED AS ANY SORT OF FINANCIAL ADVISE**. ***NOR SHOULD*** the responses from this application used for any sort of investment trades or trade specific strategies or backtesting. The outcomes are unknown and there are no guarantees to it, if you do so.  
+**IMPORTANT :** This is an example of a local Finance ChatBot augmented with knowledge context, in this case around Indian Capital Markets. The intent is to demonstrate how to build context aware LLM applications for a specific knowledge domain . This applicagion should **NOT BE CONSTRUED OR USED AS ANY SORT OF FINANCIAL ADVISE**. ***NOR SHOULD*** the responses from this application used for any sort of investment trades or trade specific strategies or backtesting. The outcomes are unknown and there are no guarantees to it, if you do so.  
 
 ## Pronounciation Trivia  ## 
 The word Dhan has an origin in the language Sanksrit for Wealth. It should be pronounced with a soft "a" in english, such as the a in "fa"(ther) and not as a in "ma"(n)
