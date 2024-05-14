@@ -1,19 +1,21 @@
 name: Community
 entries:
-  - title: Dhan(Wealth)-bot , A self-hosted localized LLM based FinBot on Ollama & llama3 with Memory and evaluation
+  - title: A self-hosted localized Finance Educator LLM on Ollama & llama3
     label: finbot-ollama
     short_description: |
-      This AMP uses the increasingly popular Ollama service to create selfhosted LLM Bot on a localized environment
+      Dhan stands for Wealth in Sanksrit. This AMP uses the increasingly popular Ollama service to create self-hosted LLM Bot on a localized environment. It uses a
+      ChatGPT style interface that holds the memory of earlier questions. We also use Trulens, a framework to evaluate the performance of LLM
+      responses
     long_description: |
       This AMP uses Ollama hosted service to localized LLM that is contextualized with a Financial Knowledge System. Dhan stands for
-      Wealth in Sanksrit. This AMP uses llama3 to provide ChatGPT style Chat interface with memory on a localized varsity dataset. We
-      also demnonstrate use of Trulens to evaluate the quality of response by the LLM.
+      Wealth in Sanksrit. This AMP uses llama3 to provide ChatGPT style Chat interface contextualized to a dataset on Capital markets in Indian Context
+      (hence the name Dhan i.e. Wealth). We also demnonstrate use of Trulens to evaluate the quality of response by the LLM.
     long_description_html: |
       This AMP uses Ollama hosted service to localized LLM that is contextualized with a Financial Knowledge System. Dhan stands for
-      Wealth in Sanksrit. This AMP uses llama3 to provide ChatGPT style Chat interface with memory on a localized varsity dataset using 
-      chainlit. We also demnonstrate use of Trulens to evaluate the quality of response by the LLM.
+      Wealth in Sanksrit. This AMP uses llama3 to provide ChatGPT style Chat interface contextualized to a dataset on Capital markets in Indian Context
+      (hence the name Dhan i.e. Wealth). We also demnonstrate use of Trulens to evaluate the quality of response by the LLM.
     image_path: >-
-      https://github.com/SuperEllipse/finbot-ollama/blob/main/assets/images/dhanbot.jpg
+      https://github.com/SuperEllipse/finbot-ollama/blob/0d10ad99be584be7097bca38b39c71b10dac63b0/assets/images/Dhan-bot1.jpg
     tags:
       - ollama
       - llamaindex
