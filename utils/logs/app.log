@@ -1,4 +1,5 @@
-2024-05-10 13:20:05 UTC | INFO | INFO : ollama exists
-2024-05-10 13:20:05 UTC | INFO | INFO: pulling llama3 from Ollama library
-2024-05-10 13:20:30 UTC | INFO | INFO: Model Response Obtained
-2024-05-10 13:20:30 UTC | INFO | INFO: Model Loaded and response, Time required: 24.672985 seconds
+2024-05-15 06:20:34 UTC | INFO | INFO : ollama exists
+2024-05-15 06:20:37 UTC | INFO | INFO : Started /entrypoint.sh as a background process.
+2024-05-15 06:20:37 UTC | INFO | INFO: pulling llama3 from Ollama library
+2024-05-15 06:21:01 UTC | INFO | INFO: Model Response Obtained
+2024-05-15 06:21:01 UTC | INFO | INFO: Model Loaded and response, Time required: 23.367356 seconds

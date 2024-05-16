@@ -16,10 +16,10 @@ environment_variables:
   description: "Define the Large language model to be pulled by Ollama"
   required: True
 
-  OLLAMA_PORT:
-  default: "8080"
-  description: "Define the port to be used by Ollama service"
-  required: True
+  # OLLAMA_PORT:
+  # default: "8080"
+  # description: "Define the port to be used by Ollama service"
+  # required: True
 
   # The OLLAMA BASE URL should be of the format http://OLLAMA_HOST in case you are changing the host and the port values
   # the value below should also be changed
