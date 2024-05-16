@@ -23,10 +23,10 @@ environment_variables:
 
   # The OLLAMA BASE URL should be of the format http://OLLAMA_HOST in case you are changing the host and the port values
   # the value below should also be changed
-  OLLAMA_BASE_URL:
-  default: "http://127.0.0.1:8080"
-  description: "Define the Large language model to be pulled by Ollama"
-  required: True  
+  # OLLAMA_BASE_URL:
+  # default: "http://127.0.0.1:8080"
+  # description: "Define the Large language model to be pulled by Ollama"
+  # required: True  
 
 runtimes:
   - editor: PBJ Workbench ## Other acceptable values are determined by the runtimes available in your CML environment
