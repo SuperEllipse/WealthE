@@ -50,10 +50,10 @@ tasks:
     name: Ingest Dataset
     entity_label: create_dataset_job
     script: 1_job-ingest-dataset/site_scrapper.py
+    short_summary: Ingest dataset to be added later into the vector database    
     arguments: None
     cpu: 2
     memory: 4
-    short_summary: Create job to install project dependencies.
     environment:
       TASK_TYPE: CREATE/RUN_JOB
 
@@ -62,10 +62,10 @@ tasks:
     name: Create Vector Database
     entity_label: create_vectordb_job
     script: 2_job-create-vector-db/bootstrap_ollama.py
+    short_summary: Setup the vector database
     arguments: None
     cpu: 2
     memory: 4
-    short_summary: Create job to install project dependencies.
     environment:
       TASK_TYPE: CREATE/RUN_JOB
 
@@ -84,10 +84,11 @@ tasks:
     name: Save evaluations in mlflow
     entity_label: create_saveevaluations_session
     script: 5_session-save-evaluations-in-mlflow/persist.py
+    short_summary: Log the evaluations in Mlflow
     arguments: None
     cpu: 2
     memory: 4
-    short_summary: Log the evaluations in Mlflow
+
 
   ## Step 5:  Run Finbot
   - type: start_application
