@@ -11,10 +11,10 @@ environment_variables:
     description: "Define the Large language model to be pulled by Ollama"
     required: True
 
-  OLLAMA_HOST:
-  default: "127.0.0.1:8080"
-  description: "Define the Large language model to be pulled by Ollama"
-  required: True
+  # OLLAMA_HOST:
+  # default: "127.0.0.1:8080"
+  # description: "Define the Large language model to be pulled by Ollama"
+  # required: True
 
   # OLLAMA_PORT:
   # default: "8080"
