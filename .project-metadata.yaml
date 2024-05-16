@@ -32,7 +32,7 @@ runtimes:
   - editor: PBJ Workbench ## Other acceptable values are determined by the runtimes available in your CML environment
     kernel: Python 3.11 ## Same here, check your runtimes (custom runtimes can be added as well)
     edition: NVIDIA GPU Ollama ## Particularly relevant if using GPUs, Nvidia GPU
-
+    version: 2
 ## Below are some sample tasks based on some of the most popular aspects of AMP creation.
 tasks:
 
