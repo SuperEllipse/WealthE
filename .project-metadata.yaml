@@ -46,7 +46,7 @@ tasks:
     memory: 4
 
   ## Step 1: JOB related AMP Ingest Dataset
-  - type: create_job
+  - type: run_session
     name: Ingest Dataset
     entity_label: create_dataset_job
     script: 1_job-ingest-dataset/site_scrapper.py
@@ -54,11 +54,10 @@ tasks:
     arguments: None
     cpu: 2
     memory: 4
-    environment:
-      TASK_TYPE: CREATE/RUN_JOB
+
 
   ## Step 2: JOB related to set up Vector DB
-  - type: create_job
+  - type: run_session
     name: Create Vector Database
     entity_label: create_vectordb_job
     script: 2_job-create-vector-db/bootstrap_ollama.py
@@ -66,8 +65,6 @@ tasks:
     arguments: None
     cpu: 2
     memory: 4
-    environment:
-      TASK_TYPE: CREATE/RUN_JOB
 
   ## Step 3 : Build the Evaluations dashboard
   - type: run_session
@@ -89,17 +86,27 @@ tasks:
     cpu: 2
     memory: 4
 
-
-  ## Step 5:  Run Finbot
+  ## Step 5:  Run Tru lens Evaluation Dashboard
   - type: start_application
     name: LLM Evaluation using the Trulens Dashboard
     short_summary: Use Trulens to evaluate our LLM based on the evaluation questions in assets/data/questions/evaluation_questions.txt.
     long_summary: We use the RAG Triad of Relevance, Groundednes and Context Relevance explained in the README to evaluate our LLM.
-    subdomain: llm-dashboard
-    script: 3_app-run-python-script/app.py
+    subdomain: eval-dashboard
+    script: 4_app-run-evaluation-dashboard/app.py
+    cpu: 3
+    memory: 4
+    environment_variables:
+      TASK_TYPE: START_APPLICATION
+
+  ## Step 5:  Run WealthE
+  - type: start_application
+    name: Start WealthE Application
+    short_summary:  WealthE application uses Chainlit to provide a Q&A on Indian Capital markets
+    long_summary: Use the Application for Q&A on Indian capital markets. The application also remembers the prior question, so you can ask "can you elaborate?"
+    subdomain: wealthe
+    script: 6_app-run-chat-bot/app.py
     cpu: 8
     memory: 32
     gpu: 1
     environment_variables:
       TASK_TYPE: START_APPLICATION
-  

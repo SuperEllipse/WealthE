@@ -1,6 +1,6 @@
 name: Community
 entries:
-  - title: WealthE: A selfhosted Wealth Educator GenAI application for Indian Capital Markets using Ollama & llama3
+  - title: WealthE, A self-hosted Wealth Educator GenAI application for Indian Capital Markets using Ollama & llama3
     label: WealthE
     short_description: |
       WealthE serves as a wealth education assistant answering queries in Q&A style using a contextualized LLM.
@@ -9,7 +9,7 @@ entries:
     long_description_html: |
       This AMP uses Ollama LLM service to create a Wealth Educator application contextualized for Indian Capital Market.The AMP uses llama3 to provide ChatGPT style interface that holds conversational memory. In addition we demonstrate LLM Ops through prompt evaluation using TruLens and Mlflow frameworks.
     image_path: >-
-      https://raw.githubusercontent.com/superellipse/finbot-ollama/main/assets/images/Dhanbot-small.jpg    
+      https://raw.githubusercontent.com/superellipse/WealthE/main/assets/images/amp-logo.png    
     tags:
       - LLMOps
       - ollama
@@ -17,7 +17,7 @@ entries:
       - llama3
       - chainlit
       - Trulens
-    git_url: 'https://github.com/SuperEllipse/finbot-ollama'
+    git_url: 'https://github.com/SuperEllipse/WealthE'
     is_prototype: true
     is_community: true
     is_new: true
