@@ -1,25 +1,55 @@
-# Dhan-Bot:  A localized Wealth-Educator-bot with memory augmented with context of Indian Capital Markets.  
+# WealthE:  A selfhosted Wealth Educator GenAI application for Indian Capital Markets 
 
-![](./assets/images/Dhan-bot1.jpg)
+![](./assets/images/app-logo.png)
 ## Disclaimer ##
-**IMPORTANT :** This is an example of a local Finance ChatBot augmented with knowledge context, in this case around Indian Capital Markets. The intent is to demonstrate how to build context aware LLM applications for a specific knowledge domain . This applicagion should **NOT BE CONSTRUED OR USED AS ANY SORT OF FINANCIAL ADVISE**. ***NOR SHOULD*** the responses from this application used for any sort of investment trades or trade specific strategies or backtesting. The outcomes are unknown and there are no guarantees to it, if you do so.  
-
-## Pronounciation Trivia  ## 
-The word Dhan has an origin in the language Sanksrit for Wealth. It should be pronounced with a soft "a" in english, such as the a in "fa"(ther) and not as a in "ma"(n)
+**IMPORTANT :** This is an example of a GenAI Application that serves as a wealth assistant on Indian Capital Markets. The objectives is to demonstrate how to build domain specific GenAI applications. This application should **NOT BE CONSTRUED OR USED AS ANY SORT OF FINANCIAL ADVISE**. ***NOR SHOULD*** the responses from this application used for any sort of investment trades or trade specific strategies or backtesting. The outcomes are unknown and there are no guarantees to it, if you do so.  
 
 ## Purpose ## 
   Organisations are increasingly seeking to build Large Language Models(LLM) applications for embodying organizational knowledge. However, due to data sensitivity and security concerns, such applications trained on internal knowledge bases cannot use API based provider ( e.g. OpenAI). The ability to use  powerful open Large language Models ( e.g. llama models from Meta) augmented with contextual datasets provide promising solutions. Yet,evaluating these applications remain a challenge. 
 
-   In this AMP, we address some of these requirements in build Enterprise knowledge systems. Dhanbot, a Fineducator-bot is
-  - Uses a llama(8b) model augmented on a Finance Varsity dataset using Retrieval Augmented Generation (RAG) ( see references for more details on RAG )
-  - Holds memory i.e. remembers the prior question asked before formulating the next answer
-  - Uses an evaluation Triad of Groundedness, Answer Relevance and Context Relevance to benchmarking LLM Performance ( see section the Triad for more on this topic)
-  - Provides a ChatGPT style interface with streaming output to reduce the latency perceptions
-  - Uses a vector database to save the knowledge base that is used to augment the context for the Q&A with the underlying LLM 
+   With this application, we address some of these requirements in build Enterprise knowledge systems using GenAI with performance evaluations
+   WealthE is a wealth educator on Indian Capital Markets that
+  - uses a llama(8b) model augmented on a captital makets and finance education data using Retrieval Augmented Generation (RAG) ( see references for more details on RAG )
+  - holds memory i.e. remembers the prior question asked before formulating the next answer
+  - demonstrates LLMOps : Uses an evaluation Triad of Groundedness, Answer Relevance and Context Relevance to benchmarking LLM Performance ( see section the Triad for more on this topic)
+  - provides a ChatGPT style "smart" interface with streaming output to reduce the latency perceptions
+  - uses a vector database to save the knowledge base that is used to augment the context for the Q&A with the underlying LLM 
 
+### An Example response contextualized for Indian Capital Markets
+
+![](assets/images/GenAi-app-contextualization.png)
+
+## The WealthE Application
+  WealthE serves as a wealth education assitant answering queries in Q&A style using a contextualized LLM. The "context augmentation" is
+  achieved through a finance varsity data ( see references ) on Indian Capital Markets. As seen below, the application holds memory 
+  across conversations. For. e.g. "when the user types can you tell me more ?, it remembers the earlier response and elaborates the response.
+  
+  ![](./assets/images/GenAI-app-with-memory.png)
+  
+
+## LLMOPs : Evaluation of the Generative AI Application 
+  We demonstrate LLMOps by evaluating the application on a set of evaluation prompts.You can find the prompts in the folder assets/data/questions. 
+  You can add additional questions or modify the questions in this file, and re-run 3_session-evaluate-llm step and view the results in steps 4_app-run-evaluation-dashboard.
+    ![](./assets/images/Trulens-dashboard.png)
+  
+  Finally, you can compare these evaluations with the earlier ones in mlflow using 5_session-save-evaluations-in-mlflow. Following 2 questions are already performed. 
+  ```
+    What is fundamental Analysis ? 
+    What are tax implications for traders ?
+  ```
+  
+  Below we see the evaluations persisted in MLflow in Cloudera Machine Learning. This helps us compare overtime the performance of the application for newer prompts.
+    ![](./assets/images/Experiment.jpg)
+  
+  
+  
+  **Note** : Since human evaluations is time consuming, we use LLMs to perform the evaluations. This is resource and time intensive and hence you may need to carefully
+  evaluate the questions you will use for LLM evaluations. Refer to reference section to understand more around Trulens, the LLM Evaluation framework used here. 
+  
+  
 ## The Tech Bits ##
 ### Runtime Pre-requisites: ##
-The Dhan-bot AMP has some essential pre-requisites to work:
+The WealthE AMP has some essential pre-requisites to work:
 - A Custom community runtime called Ollama Runtime has been created. This runtime must be added to your Runtime catalog to enable the application to work. See instructions for adding the runtime [here](https://github.com/cloudera/community-ml-runtimes/tree/main/ollama)
 -  GPU enabled compute: 1 GPU compute  instance is required to run the application and host the llama model. Use this for running the chat application, if you are not using the AMP. 
 
@@ -47,7 +77,15 @@ Some of key components used for building this application are as follows:
 - Trulens : Used for evaluation and benchmarking based on Context Relevance, Answer Relevance and Groundedness of response 
 - Chainlit : Used for the user interface. 
 
-## Evaluation Triad ## 
+
+
+
+
+## References ##
+- [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/pdf/2005.11401)
+- [Dataset - Zerodha Varsity](https://zerodha.com/varsity/): An open financial education varsity on Indian capital markets
+
+### Evaluation Triad ## 
 For Evaluation we use the RAG Triad of Metrics described by TruLens and DeepLearning.ai 
 (Reference / Image Credits: [Trulens](https://www.trulens.org/trulens_eval/getting_started/core_concepts/rag_triad/))
 ![](./assets/images/RAGTriad.jpg)
@@ -57,17 +95,5 @@ For Evaluation we use the RAG Triad of Metrics described by TruLens and DeepLear
 2. **Groundedness**: Measures how well the RAG’s final response is supported by the retrieved context.
 3. **Answer Relevance**: Evaluates the relevance of the RAG’s final response to the original user query.
 
-### Metrics Examples :
-We use CML Metrics and the Trulens Dashboard to persist and review our evaluations.
-
-
-# User Interface
-- Application 1 : is the Chatbot that provides 
-
-
-## References ##
-- [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/pdf/2005.11401)
-- [Dataset - Zerodha Varsity](https://zerodha.com/varsity/): This is an educational resource providing Financial knowhow covering topics ranging from economy, government securities, financial and investment knowhow. The information at the time of building this app is free and open with no signup, no pay-wall and no adds ( as quoted from the weblink on 6.May.2024) 
-- 
 ## Attribution ##
-- Dhan-Bot image created with [Font Generator]("https://www.textstudio.com/")
+- Image created using Free Adobe Image Generator
