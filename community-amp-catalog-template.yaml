@@ -1,13 +1,13 @@
 name: Community
 entries:
-  - title: WealthE, A self-hosted Wealth Educator GenAI application for Indian Capital Markets using Ollama & llama3
+  - title: WealthE, A self-hosted Wealth Educator GenAI application
     label: WealthE
     short_description: |
-      WealthE serves as a wealth education assistant answering queries in Q&A style using a contextualized LLM.
+      WealthE serves is a GenAI wealth education assistant, which uses llama3 & Ollama,to answer queries on Indian Capital Market. 
     long_description: |
-      This AMP uses Ollama LLM service to create a Wealth Educator application contextualized for Indian Capital Market.The AMP uses llama3 to provide ChatGPT style interface that holds conversational memory. In addition we demonstrate LLM Ops through prompt evaluation using TruLens and Mlflow frameworks.
+      This AMP uses Ollama LLM service to create a self-hosted Wealth Educator application contextualized for Indian Capital Market.It uses the llama3 LLM to provide ChatGPT style interface that holds conversational memory. In addition we demonstrate LLM Ops through prompt evaluation using TruLens and Mlflow frameworks.
     long_description_html: |
-      This AMP uses Ollama LLM service to create a Wealth Educator application contextualized for Indian Capital Market.The AMP uses llama3 to provide ChatGPT style interface that holds conversational memory. In addition we demonstrate LLM Ops through prompt evaluation using TruLens and Mlflow frameworks.
+      This AMP uses Ollama LLM service to create a self-hosted Wealth Educator application contextualized for Indian Capital Market.It uses the llama3 LLM to provide ChatGPT style interface that holds conversational memory. In addition we demonstrate LLM Ops through prompt evaluation using TruLens and Mlflow frameworks.
     image_path: >-
       https://raw.githubusercontent.com/superellipse/WealthE/main/assets/images/amp-logo.png    
     tags:
