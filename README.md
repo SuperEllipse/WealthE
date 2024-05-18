@@ -1,15 +1,15 @@
-# WealthE:  A selfhosted Wealth Educator GenAI application for Indian Capital Markets 
+# WealthE:  A selfhosted Wealth Educator GenAI application for Indian Capital Markets using Ollama and llama3
 
 ![](./assets/images/app-logo.png)
 ## Disclaimer ##
 **IMPORTANT :** This is an example of a GenAI Application that serves as a wealth assistant on Indian Capital Markets. The objectives is to demonstrate how to build domain specific GenAI applications. This application should **NOT BE CONSTRUED OR USED AS ANY SORT OF FINANCIAL ADVISE**. ***NOR SHOULD*** the responses from this application used for any sort of investment trades or trade specific strategies or backtesting. The outcomes are unknown and there are no guarantees to it, if you do so.  
 
 ## Purpose ## 
-  Organisations are increasingly seeking to build Large Language Models(LLM) applications for embodying organizational knowledge. However, due to data sensitivity and security concerns, such applications trained on internal knowledge bases cannot use API based provider ( e.g. OpenAI). The ability to use  powerful open Large language Models ( e.g. llama models from Meta) augmented with contextual datasets provide promising solutions. Yet,evaluating these applications remain a challenge. 
+  Organisations are increasingly seeking to build Large Language Models(LLM) applications for embodying organizational knowledge. However, due to data sensitivity and security concerns, such applications trained on internal knowledge bases cannot use Cloud based API based providers. The ability to use  powerful open Large language Models ( e.g. llama models from Meta) augmented with contextual datasets provide promising solutions. Yet,evaluating these applications remain a challenge. 
 
-   With this application, we address some of these requirements in build Enterprise knowledge systems using GenAI with performance evaluations
+   With WealthE, we address some of these requirements in build Enterprise knowledge systems using GenAI with performance evaluations
    WealthE is a wealth educator on Indian Capital Markets that
-  - uses a llama(8b) model augmented on a captital makets and finance education data using Retrieval Augmented Generation (RAG) ( see references for more details on RAG )
+  - uses a llama3(8b) model augmented on a captital makets and finance education data using Retrieval Augmented Generation (RAG) ( see references for more details on RAG )
   - holds memory i.e. remembers the prior question asked before formulating the next answer
   - demonstrates LLMOps : Uses an evaluation Triad of Groundedness, Answer Relevance and Context Relevance to benchmarking LLM Performance ( see section the Triad for more on this topic)
   - provides a ChatGPT style "smart" interface with streaming output to reduce the latency perceptions
@@ -20,7 +20,7 @@
 ![](assets/images/GenAi-app-contextualization.png)
 
 ## The WealthE Application
-  WealthE serves as a wealth education assitant answering queries in Q&A style using a contextualized LLM. The "context augmentation" is
+  WealthE serves as a wealth education assistant answering queries in Q&A style using a contextualized LLM. The "context augmentation" is
   achieved through a finance varsity data ( see references ) on Indian Capital Markets. As seen below, the application holds memory 
   across conversations. For. e.g. "when the user types can you tell me more ?, it remembers the earlier response and elaborates the response.
   
@@ -76,9 +76,6 @@ Some of key components used for building this application are as follows:
 - Chromadb : Vector Database holds the financial context dataset that is used to augment the prompts to the LLM
 - Trulens : Used for evaluation and benchmarking based on Context Relevance, Answer Relevance and Groundedness of response 
 - Chainlit : Used for the user interface. 
-
-
-
 
 
 ## References ##

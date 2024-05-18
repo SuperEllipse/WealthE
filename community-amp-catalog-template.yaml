@@ -1,17 +1,17 @@
 name: Community
 entries:
-  - title: A self-hosted Finance GenAI App using Ollama & llama3
-    label: finbot-ollama
+  - title: WealthE: A selfhosted Wealth Educator GenAI application for Indian Capital Markets using Ollama & llama3
+    label: WealthE
     short_description: |
-      Dhan symbolizes Wealth in Sanksrit language. This AMP uses Ollama & llama3 to create self-hosted LLM based Finance Educator App. It uses a
-      ChatGPT style interface that holds conversational memory.
+      WealthE serves as a wealth education assistant answering queries in Q&A style using a contextualized LLM.
     long_description: |
-      This AMP uses Ollama LLM service to create a Wealth Educator application contextualized for Indian Capital Markets(hence the name Dhan i.e. Wealth).The AMP uses llama3 to provide ChatGPT style interface that holds conversational memory. In addition we demonstrate LLM Ops through prompt evaluation using TruLens and Mlflow frameworks.
+      This AMP uses Ollama LLM service to create a Wealth Educator application contextualized for Indian Capital Market.The AMP uses llama3 to provide ChatGPT style interface that holds conversational memory. In addition we demonstrate LLM Ops through prompt evaluation using TruLens and Mlflow frameworks.
     long_description_html: |
-      This AMP uses Ollama LLM service to create a Wealth Educator application contextualized for Indian Capital Markets(hence the name Dhan i.e. Wealth).The AMP uses llama3 to provide ChatGPT style interface that holds conversational memory. In addition we demonstrate LLM Ops through prompt evaluation using TruLens and Mlflow frameworks.
+      This AMP uses Ollama LLM service to create a Wealth Educator application contextualized for Indian Capital Market.The AMP uses llama3 to provide ChatGPT style interface that holds conversational memory. In addition we demonstrate LLM Ops through prompt evaluation using TruLens and Mlflow frameworks.
     image_path: >-
       https://raw.githubusercontent.com/superellipse/finbot-ollama/main/assets/images/Dhanbot-small.jpg    
     tags:
+      - LLMOps
       - ollama
       - llamaindex
       - llama3
