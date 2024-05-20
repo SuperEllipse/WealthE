@@ -6,6 +6,10 @@ import ssl
 import trafilatura
 import json
 from tqdm import tqdm
+from utils.configs import (
+    DATASET_URL,
+    DATASET_PATH
+)
 
 
 def get_sitemap(url):
@@ -73,13 +77,13 @@ def extract_text_from_url(url):
 
 def main():
     ssl._create_default_https_context = ssl._create_stdlib_context
-    url = "https://zerodha.com/varsity/chapter-sitemap2.xml"
+    url = DATASET_URL
     xml = get_sitemap(url)
     df = sitemap_to_dataframe(xml, verbose=False)
     urls = df["loc"].to_numpy()
     urls = [url for url in urls if "%" not in url]
 
-    with open("/home/cdsw/assets/data/raw/chapters.txt", "w") as f:
+    with open(DATASET_PATH, "w") as f:
         for url in tqdm(urls[1:]):
             topic = url.split("/")[-2]
             if "hindi" in topic or topic in ["the-vegetable-list", "bonus-share-vs-stock-split", "getting-started-2"]:
