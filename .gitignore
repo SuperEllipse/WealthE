@@ -1,5 +1,6 @@
 assets/data/index/*
 assets/data/chroma_db/*
+assets/data/trulens_db/*
 utils/__pycache__/*
 utils/logs/*
 core.*

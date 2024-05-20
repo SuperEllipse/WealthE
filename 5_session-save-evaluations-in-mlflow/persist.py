@@ -3,6 +3,7 @@ import os
 from utils.configs import TRULENS_DB_PATH, DEFAULT_LLM,EVAL_DATA_DIR, LLM_EXPERIMENT_NAME
 # For some WIERD Reason, the mlflow experiment needs to be set before the Trulens_eval package. Else the mlflow.set_experiment fails. (Vish :10.May, This issue almost killed me from frustration )
 import mlflow
+import math
 mlflow.set_experiment(LLM_EXPERIMENT_NAME)
 
 from trulens_eval import Tru
@@ -21,6 +22,27 @@ def read_questions_from_file(filename):
             questions.append(line.strip())
     return questions
 
+
+def log_metric_safely(metric_name, value, not_computed_value=-999.0, not_computed_tag=None):
+    """
+    Logs a metric value to MLflow, handling NaN values gracefully.
+
+    Parameters:
+    - metric_name: The name of the metric to log.
+    - value: The value of the metric.
+    - not_computed_value: The value to log if the metric value is NaN (default is -999.0).
+    - not_computed_tag: An optional tag name to set in MLflow if the metric value is NaN.
+    """
+    if math.isnan(value):
+        # Log a default value if NaN
+        mlflow.log_metric(metric_name, not_computed_value)
+        # Optionally set a tag indicating the value was not computed
+        if not_computed_tag:
+            mlflow.set_tag(f"{metric_name}_status", "not_computed")
+    else:
+        # Log the actual value if it's not NaN
+        mlflow.log_metric(metric_name, round(value, 2))
+        
 def save_evaluations_in_mlflow (eval_questions, eval_df):
     """
     This functions persists the TRIAD metrics into the mlflow experiments
@@ -37,10 +59,12 @@ def save_evaluations_in_mlflow (eval_questions, eval_df):
       mlflow.set_tag("model_name", llm_model)
       mlflow.log_param("eval_data", eval_questions)
       mlflow.log_param("app_id", index)
-      mlflow.log_metric("context_relevance_with_cot_reasons", round(row["context_relevance_with_cot_reasons"],2))
-      mlflow.log_metric("relevance", round(row["relevance"],2))
-      mlflow.log_metric("groundedness_measure_with_cot_reasons", round(row["groundedness_measure_with_cot_reasons"],2))
-      mlflow.log_metric("latency", row["latency"])
+      # we use this method, because sometimes the previous Trulens computations generates NaN and we need to handle it gracefully
+      log_metric_safely("context_relevance_with_cot_reasons", round(row["context_relevance_with_cot_reasons"],2))
+      log_metric_safely("relevance", round(row["relevance"],2))
+      log_metric_safely("groundedness_measure_with_cot_reasons", round(row["groundedness_measure_with_cot_reasons"],2))
+      log_metric_safely("latency", row["latency"])
+      mlflow.log_artifacts(EVAL_DATA_DIR, artifact_path="states")      
       mlflow.end_run()   
     logger.info("INFO: Finished persisting to MLFlow Experiments")   
   

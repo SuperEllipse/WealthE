@@ -8,6 +8,8 @@ import pandas as pd
 import numpy as np
 # we initialise the Tru object as a global object
 # Get the shared logger
+#Change the db back to base directory This trick is only to make sure trulens database is created in the right directory
+os.chdir("/home/cdsw")
 from utils.logging_config import get_logger
 logger = get_logger(__name__)
 from utils.configs import (
@@ -25,8 +27,7 @@ from trulens_eval.feedback import Groundedness
 
 tru = Tru(database_url=TRULENS_DB_URL)
 tru.reset_database()
-#Change the db back to base directory This trick is only to make sure trulens database is created in the right directory
-#os.chdir(BASE_DIR)
+
 
 from utils.rag_helper import ( 
     get_prebuilt_trulens_recorder, 
@@ -183,6 +184,8 @@ def run_rag_evaluations():
     
     #Change the eval_llm_model name to llama2 or anything else you want.
     eval_llm_model = DEFAULT_LLM
+    # list of all the recorders
+    recorders = [] 
     pull_ollama_model(model=eval_llm_model)  
     
     #load the documents to be used by the RAG
@@ -205,6 +208,9 @@ def run_rag_evaluations():
                               baseline_query_engine,
                               app_id ="Baseline", feedbacks=feedbacks)
 
+    #adding the recorder to the list of recorders
+    recorders.append(tru_recorder_baseline)
+    
     run_evals(eval_questions, tru_recorder_baseline, baseline_query_engine)
     display(get_records_and_tru_feedback("Baseline"))
     df = tru.get_leaderboard(app_ids=[])   
@@ -216,9 +222,17 @@ def run_rag_evaluations():
     logger.info("INFO: Starting SentenceWindowsize 1 Evaluations") 
     sentence_window_index_1 = build_sentence_window_index(documents, save_dir=os.path.join(INDEX_DIR,"sentence_index1"), window_size=1)
     sentence_window_engine_1 = get_sentence_window_query_engine( sentence_window_index_1)
-    tru_recorder_baseline = get_prebuilt_trulens_recorder(
+    tru_recorder_1 = get_prebuilt_trulens_recorder(
                               sentence_window_engine_1,
                               app_id ='sentence windowsize 1', feedbacks=feedbacks)
+    #adding the recorder to the list of recorders
+    recorders.append(tru_recorder_1)
+    
+    run_evals(eval_questions, tru_recorder_1, sentence_window_engine_1)
+    df=tru.get_leaderboard(app_ids=[])
+    logger.info("INFO: Ran Sentence Window size 1 Evaluations") 
+    logger.info(f"LEADER BOARD: \n {df}")       
+
 
     run_evals(eval_questions, tru_recorder_baseline, sentence_window_engine_1)
     df=tru.get_leaderboard(app_ids=[])
@@ -233,6 +247,9 @@ def run_rag_evaluations():
                               sentence_window_engine_3,
                               app_id ='sentence windowsize 3', feedbacks=feedbacks)
     
+    #adding the recorder to the list of recorders
+    recorders.append(tru_recorder_3)
+        
     run_evals(eval_questions, tru_recorder_3, sentence_window_engine_3)
     df=tru.get_leaderboard(app_ids=[])
     logger.info("INFO: Ran Sentence Window size 3 Evaluations") 
@@ -254,7 +271,9 @@ def run_rag_evaluations():
         auto_merging_engine_0,
         app_id ='Merging Index (chunksize:2048 & 512)', feedbacks=feedbacks
     )
-
+    #adding the recorder to the list of recorders
+    recorders.append(tru_recorder_AM_1)
+        
     run_evals(eval_questions, tru_recorder_AM_1, auto_merging_engine_0)
 
     # run Evals
@@ -280,7 +299,9 @@ def run_rag_evaluations():
         auto_merging_engine_1,
         app_id ='Merging Index(chunksize: 2048,512,128)', feedbacks=feedbacks
     )
-
+    #adding the recorder to the list of recorders
+    recorders.append(tru_recorder_AM_2)
+    
     run_evals(eval_questions, tru_recorder_AM_2, auto_merging_engine_1)
 
     df=tru.get_leaderboard(app_ids=[])  
@@ -288,10 +309,15 @@ def run_rag_evaluations():
     logger.info("INFO: Ran Merging Index(chunksize: 2048,512,128)  Evaluations") 
     logger.info(f"LEADER BOARD: \n {df}")
   
-    logger.info("INFO: Starting persistence to MLFlow") 
-    # Unable to fix mlflow.set_experiment() error. so moving this to dashboard side
-    #save_evaluations_in_mlflow( eval_questions)
-   
+    logger.info("INFO: Looping through All the recorders") 
+
+    # Now we will wait for all the recorders to finish before we exit 
+    # We do this because we need all the data before we log the metrics to MLFlow in the next step
+    for recorder in recorders:
+        recorder.wait_for_feedback_results()
+        logger.info(f"INFO: Finished Evaluations for {recorder.app_id}")         
+        logger.info(f"LEADER BOARD: \n {tru.get_leaderboard(app_ids=[recorder.app_id])}")         
+        
 def save_evaluations_in_mlflow ( eval_questions):
     """
     This functions persists the TRIAD metrics into the mlflow experiments
