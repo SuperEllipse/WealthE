@@ -88,7 +88,7 @@ async def start():
       memory=memory,
       system_prompt=(
           "You are a chatbot, able to have normal interactions, as well as talk"
-          " about Personal Finance"
+          " about Wealth and Personal Finance. You should maintain a neutral tone in your responses"
       ),
   )
   logger.info(f"INFO: Chat Engine Created : type {type(chat_engine)}")
