@@ -25,7 +25,9 @@
   across conversations. For. e.g. "when the user types can you tell me more ?, it remembers the earlier response and elaborates the response.
   
   ![](./assets/images/ex_context_memory.png)
-  
+
+### Launching the WealthE Application
+
 
 ## LLMOPs : Evaluation of the GenAI  Applications 
   We demonstrate extensibility of Cloudera easy integration to LLMOps frameworks  for evaluating LLM Performance using Trulens as our Prompt evaluation framework. 
