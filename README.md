@@ -15,18 +15,24 @@
   - provides a ChatGPT style "smart" interface with streaming output to reduce the latency perceptions
   - uses a vector database to save the knowledge base that is used to augment the context for the Q&A with the underlying LLM 
 
-### An Example response contextualized for Indian Capital Markets
-
-![](assets/images/ex_contextualization.png)
 
 ## The WealthE Application
   WealthE serves as a wealth education assistant answering queries in Q&A style using a contextualized LLM. The "context augmentation" is
-  achieved through a finance varsity data ( see references ) on Indian Capital Markets. As seen below, the application holds memory 
+  achieved through contextualization Capital Markets with a focus on India.
+
+
+![](assets/images/ex_contextualization.png)
+  
+  
+  The application also holds memory 
   across conversations. For. e.g. "when the user types can you tell me more ?, it remembers the earlier response and elaborates the response.
   
   ![](./assets/images/ex_context_memory.png)
 
-### Launching the WealthE Application
+
+## Demo'ing the LLM Application on RAG Architecture in Finance Domain
+
+WealthE is easy to demo and provides a great example of domain adaption of LLM Application for specific contexts. You can launch the application directly from the 
 
 
 ## LLMOPs : Evaluation of the GenAI  Applications 
