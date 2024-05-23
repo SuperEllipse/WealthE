@@ -16,14 +16,6 @@ logger = get_logger(__name__)
 # Log messages at different levels
 #logger.debug("This is a debug message.")
 logger.info("This is an informational message.")
-#logger.warning("This is a warning message.")
-#logger.error("This is an error message.")
-#logger.critical("This is a critical message.")
-
-
-
-#chainlit_app_file = "~/scripts/Query.py"
-#chainlit_app_file = "~/scripts/Chat.py"
 chainlit_app_file = "6_app-run-chat-bot/Chat.py"
 
 

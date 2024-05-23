@@ -19,9 +19,9 @@ core.*
 
 # need to keep these files to preserve folder structure
 !.gitignore
+!.chainlit
 !assets/data/index/.gitkeep
 !assets/data/chroma_db/.gitkeep
 !assets/data/trulens_db/.gitkeep
 !utils/logs/.gitkeep
-
 

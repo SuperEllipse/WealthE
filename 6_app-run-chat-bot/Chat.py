@@ -1,34 +1,17 @@
 
-from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
+from llama_index.core import VectorStoreIndex
 
-from llama_index.llms.ollama import Ollama
-from llama_index.embeddings.fastembed import FastEmbedEmbedding
 from llama_index.vector_stores.chroma import ChromaVectorStore
-from llama_index.core import StorageContext,  load_index_from_storage
-from llama_index.core import Settings
-from IPython.display import Markdown, display
+from llama_index.core import StorageContext
 import chromadb
 ## Run Ollama as a background process
-import ollama
 import os
-import sys
-import time
-import subprocess
-import psutil
-
-#sys.path.append('/home/cdsw/utils')
-import imp
-#import utils.logging_config
-#imp.reload(utils.logging_config)
 
 #chainlit is our chat platform
 import chainlit as cl
 
 from utils.configs import (
-    BASE_DIR, DATA_DIR, EVAL_DATA_DIR, RAW_DATA_DIR, 
-    INDEX_DIR, DB_DIR, VECTORDB_COLLECTION, IMAGE_DIR,
-    OLLAMA_BASE_URL, DEFAULT_LLM ,DEFAULT_CHAT_MODE, 
-
+    DB_DIR, VECTORDB_COLLECTION, DEFAULT_LLM ,DEFAULT_CHAT_MODE, 
     )
 
 # Get the shared logger
