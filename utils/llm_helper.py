@@ -22,6 +22,7 @@ def validate_runtime():
   """
   try:
       result = subprocess.run(['ollama', '--help'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+      print("OLLAMA Runtime found")
       if result.returncode != 0 and "/bin/bash: ollama: command not found" in result.stderr:
           raise Exception("The 'ollama' command is not installed or not found in the system PATH.")
       else:
@@ -31,7 +32,7 @@ def validate_runtime():
 
   except Exception as e:
       print(f"Error: {e}")
-      print (f"You need touse a Runtime with ollama to make this application work. Have you chosen the right runtime ?")
+      print (f"You need to use a Runtime with ollama to make this application work. Have you chosen the right runtime ?")
       sys.exit(1)  # Exit with a non-zero status code
 
   logger.info("INFO : ollama exists")
@@ -145,7 +146,7 @@ def pull_ollama_model(model=DEFAULT_LLM ):
     elapsed_time = end_time - start_time
     logger.info(f"INFO: Model Loaded and response, Time required: {elapsed_time:.6f} seconds")
 
-def initialize_llm_settings(model=DEFAULT_LLM, embed_model = "BAAI/bge-small-en-v1.5",base_url=os.environ["OLLAMA_BASE_URL"]):
+def initialize_llm_settings(model=DEFAULT_LLM, embed_model = "BAAI/bge-small-en-v1.5",base_url=os.getenv("OLLAMA_BASE_URL", "127.0.0.1:8080")):
     """
     Initializes and configures settings for the Ollama instance.
     """

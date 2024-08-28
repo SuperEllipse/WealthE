@@ -5,9 +5,9 @@ entries:
     short_description: |
       WealthE is a GenAI wealth education assistant, which uses llama3 & Ollama to answer queries on Indian Capital Markets. 
     long_description: |
-      This AMP uses Ollama LLM service to create a self-hosted Wealth Educator application contextualized for Indian Capital Market.It uses the llama3 LLM to provide ChatGPT style interface that holds conversational memory. In addition we demonstrate LLM Ops through prompt evaluation using TruLens and Mlflow frameworks.
+      This AMP uses Ollama LLM service to create a self-hosted Wealth Educator application contextualized for Indian Capital Market.It uses the llama3 LLM to provide ChatGPT style interface that holds conversational memory. In addition we demonstrate LLM Ops through prompt evaluation using TruLens and Mlflow frameworks. IMPORTANT NOTE: You need to use Ollama community runtime with this AMP. Refer detrails here: https://github.com/cloudera/community-ml-runtimes/tree/main/ollama  
     long_description_html: |
-      This AMP uses Ollama LLM service to create a self-hosted Wealth Educator application contextualized for Indian Capital Market.It uses the llama3 LLM to provide ChatGPT style interface that holds conversational memory. In addition we demonstrate LLM Ops through prompt evaluation using TruLens and Mlflow frameworks.
+      This AMP uses Ollama LLM service to create a self-hosted Wealth Educator application contextualized for Indian Capital Market.It uses the llama3 LLM to provide ChatGPT style interface that holds conversational memory. In addition we demonstrate LLM Ops through prompt evaluation using TruLens and Mlflow frameworks.IMPORTANT NOTE: You need to use Ollama community runtime with this AMP. Refer detrails here: https://github.com/cloudera/community-ml-runtimes/tree/main/ollama
     image_path: >-
       https://raw.githubusercontent.com/superellipse/WealthE/main/assets/images/amp-logo.png    
     tags:
