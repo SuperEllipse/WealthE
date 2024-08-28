@@ -3,19 +3,8 @@ import sys
 import time
 import subprocess
 import psutil
-from llama_index.core import Settings
-from llama_index.llms.ollama import Ollama
-from llama_index.embeddings.fastembed import FastEmbedEmbedding
-sys.path.append('/home/cdsw/utils')
-import imp
-import logging_config
-imp.reload(logging_config)
-from utils.configs import DEFAULT_LLM, OLLAMA_BASE_URL, DEFAULT_EMBEDDING_MODEL
-# Get the shared logger
-from logging_config import get_logger
-logger = get_logger(__name__)
 
-
+#putting validate Runtime first so that it can be checked before any installation is made 
 def validate_runtime():
   """
   Validate if the right runtme is used for the application. The session/job/application must use ollama runtime
@@ -36,6 +25,22 @@ def validate_runtime():
       sys.exit(1)  # Exit with a non-zero status code
 
   logger.info("INFO : ollama exists")
+  
+  
+
+from llama_index.core import Settings
+from llama_index.llms.ollama import Ollama
+from llama_index.embeddings.fastembed import FastEmbedEmbedding
+sys.path.append('/home/cdsw/utils')
+import imp
+import logging_config
+imp.reload(logging_config)
+from utils.configs import DEFAULT_LLM, OLLAMA_BASE_URL, DEFAULT_EMBEDDING_MODEL
+# Get the shared logger
+from logging_config import get_logger
+logger = get_logger(__name__)
+
+
     
 def is_process_running(process_name):
   """
